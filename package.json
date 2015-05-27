@@ -1,0 +1,19 @@
+{
+  "name": "text-emulator",
+  "version": "1.0.0",
+  "description": "Text emulator for quick testing",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anyWareSculpture/text-emulator.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/anyWareSculpture/text-emulator/issues"
+  },
+  "homepage": "https://github.com/anyWareSculpture/text-emulator"
+}
