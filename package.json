@@ -4,7 +4,8 @@
   "description": "Text emulator for quick testing",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "babel-node index.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,9 @@
   "bugs": {
     "url": "https://github.com/anyWareSculpture/text-emulator/issues"
   },
-  "homepage": "https://github.com/anyWareSculpture/text-emulator"
+  "homepage": "https://github.com/anyWareSculpture/text-emulator",
+  "dependencies": {
+    "babel": "^5.4.7",
+    "blessed": "^0.1.60"
+  }
 }
