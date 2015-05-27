@@ -16,7 +16,6 @@ const commandWindow = new CommandWindow({
 });
 commandWindow.focusInput();
 
-// Quit on Escape, q, or Control-C.
 screen.key(['C-c'], function(ch, key) {
   return process.exit(0);
 });

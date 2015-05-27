@@ -84,7 +84,6 @@ export default class CommandWindow extends blessed.box {
     if (!command.trim()) {
       return;
     }
-    
     this._history.log(command);
 
     this._input.clearValue();
