@@ -6,12 +6,7 @@ const WELCOME_MESSAGE = (
 
 export default class InputBox extends blessed.box {
   constructor(options) {
-    super(Object.assign({
-      top: 0,
-      left: 0,
-      width: '50%',
-      height: '100%'
-    }, options));
+    super(options);
 
     this._history = blessed.log({
       parent: this,

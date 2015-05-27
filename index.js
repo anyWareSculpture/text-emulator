@@ -8,7 +8,11 @@ const screen = blessed.screen({
 });
 
 const inputBox = new InputBox({
-  parent: screen
+  parent: screen,
+  top: 0,
+  left: 0,
+  width: '50%',
+  height: '100%'
 });
 
 // Quit on Escape, q, or Control-C.
