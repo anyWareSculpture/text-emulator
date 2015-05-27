@@ -1,5 +1,6 @@
 const blessed = require('blessed');
 
+const PANEL_TITLE = "Input Panel";
 const WELCOME_MESSAGE = (
       "Welcome!\n"
     + "Press Ctrl + C to exit.\n");
@@ -8,16 +9,13 @@ export default class CommandWindow extends blessed.box {
   constructor(options) {
     super(options);
 
-    this._history = blessed.log({
+    blessed.box({
       parent: this,
       top: 0,
       left: 0,
       width: '100%',
-      height: '90%',
-      content: WELCOME_MESSAGE,
-      scrollable: true,
-      keys: true,
-      mouse: true,
+      height: 3,
+      content: PANEL_TITLE,
       border: {
         type: 'line'
       },
@@ -26,9 +24,31 @@ export default class CommandWindow extends blessed.box {
         bg: 'gray',
         border: {
           fg: '#f0f0f0'
-        },
-        scrollbar: {
-          bg: 'blue'
+        }
+      }
+    });
+
+    this._history = blessed.log({
+      parent: this,
+      top: 3,
+      left: 0,
+      width: '100%',
+      height: '80%',
+      content: WELCOME_MESSAGE,
+      scrollable: true,
+      keys: true,
+      mouse: true,
+      border: {
+        type: 'line'
+      },
+      scrollbar: {
+        bg: 'blue'
+      },
+      style: {
+        fg: 'white',
+        bg: 'gray',
+        border: {
+          fg: '#f0f0f0'
         }
       }
     });
@@ -39,7 +59,6 @@ export default class CommandWindow extends blessed.box {
       left: 0,
       width: '100%',
       height: 4,
-      keys: true,
       border: {
         type: 'line'
       },
@@ -78,10 +97,10 @@ export default class CommandWindow extends blessed.box {
   }
 
   _submitCommand() {
-    this._input.focus();
+    this.focusInput();
 
-    const command = this._input.getValue();
-    if (!command.trim()) {
+    const command = this._input.getValue().trim();
+    if (!command) {
       return;
     }
     this._history.log(command);
