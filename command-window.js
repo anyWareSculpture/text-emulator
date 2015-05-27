@@ -85,8 +85,7 @@ export default class CommandWindow extends blessed.box {
       return;
     }
     
-    const newHistory = this._history.getContent() + '\n' + command;
-    this._history.setContent(newHistory);
+    this._history.log(command);
 
     this._input.clearValue();
 
