@@ -4,7 +4,7 @@ const WELCOME_MESSAGE = (
       "Welcome!\n"
     + "Press Ctrl + C to exit.\n");
 
-export default class InputBox extends blessed.box {
+export default class CommandWindow extends blessed.box {
   constructor(options) {
     super(options);
 
@@ -64,17 +64,22 @@ export default class InputBox extends blessed.box {
         fg: 'white',
         bg: 'gray',
         focus: {
-          bg: '#5C7982'
+          bg: '#578594'
         }
       }
     });
 
-    this._input.focus();
 
     this._input.on('submit', this._submitCommand.bind(this));
   }
 
+  focusInput() {
+    this._input.focus();
+  }
+
   _submitCommand() {
+    this._input.focus();
+
     const command = this._input.getValue();
     if (!command.trim()) {
       return;
@@ -84,9 +89,14 @@ export default class InputBox extends blessed.box {
     this._history.setContent(newHistory);
 
     this._input.clearValue();
-    this._input.focus();
+
+    this._emitCommand(command);
 
     this.screen.render();
+  }
+
+  _emitCommand(commandName) {
+    this.emit("command", commandName);
   }
 }
 

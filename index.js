@@ -1,19 +1,20 @@
 const blessed = require('blessed');
 
-const InputBox = require('./input-box');
+const CommandWindow = require('./command-window');
 
 const screen = blessed.screen({
   autoPadding: true,
   smartCSR: true
 });
 
-const inputBox = new InputBox({
+const commandWindow = new CommandWindow({
   parent: screen,
   top: 0,
   left: 0,
   width: '50%',
   height: '100%'
 });
+commandWindow.focusInput();
 
 // Quit on Escape, q, or Control-C.
 screen.key(['C-c'], function(ch, key) {
