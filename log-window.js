@@ -30,7 +30,7 @@ export default class OutputWindowStream extends blessed.Box {
       top: 3,
       left: 0,
       width: '100%',
-      height: '95%',
+      height: '100%-3',
       scrollable: true,
       mouse: true,
       border: {

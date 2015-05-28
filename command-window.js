@@ -33,7 +33,7 @@ export default class CommandWindow extends blessed.Box {
       top: 3,
       left: 0,
       width: '100%',
-      height: '80%',
+      height: '100%-7',
       content: WELCOME_MESSAGE,
       scrollable: true,
       keys: true,
