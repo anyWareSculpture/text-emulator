@@ -19,6 +19,7 @@
   "homepage": "https://github.com/anyWareSculpture/text-emulator",
   "dependencies": {
     "babel": "^5.4.7",
-    "blessed": "^0.1.60"
+    "blessed": "^0.1.60",
+    "@anyware/streaming-client": "^1.0.7"
   }
 }

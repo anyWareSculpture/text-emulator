@@ -3,9 +3,9 @@ const blessed = require('blessed');
 const PANEL_TITLE = "Input Panel";
 const WELCOME_MESSAGE = (
       "Welcome!\n"
-    + "Press Ctrl + C to exit.\n");
+    + "Press Ctrl + C or type 'exit' to exit.\n");
 
-export default class CommandWindow extends blessed.box {
+export default class CommandWindow extends blessed.Box {
   constructor(options) {
     super(options);
 
@@ -96,6 +96,10 @@ export default class CommandWindow extends blessed.box {
     this._input.focus();
   }
 
+  writeLine(text) {
+    this._history.log(text);
+  }
+
   _submitCommand() {
     this.focusInput();
 
@@ -103,7 +107,7 @@ export default class CommandWindow extends blessed.box {
     if (!command) {
       return;
     }
-    this._history.log(command);
+    this.writeLine(`> ${command}`);
 
     this._input.clearValue();
 

@@ -4,6 +4,18 @@ const CommandWindow = require('./command-window');
 const CommandInteractionHandler = require('./command-interaction-handler');
 const LogWindow = require('./log-window');
 
+require('babel/register')({
+  only: /@anyware/
+});
+const StreamingClient = require('@anyware/streaming-client');
+
+const DEFAULT_CLIENT_CONNECTION = {
+  protocol: "ws",
+  username: "anyware",
+  password: "anyware",
+  host: "connect.shiftr.io:1884"
+};
+
 const screen = blessed.screen({
   autoPadding: true,
   smartCSR: true
@@ -26,16 +38,27 @@ const outputConsole = new LogWindow({
   height: '100%'
 });
 
-const interactionHandler = new CommandInteractionHandler(outputConsole);
+const defaultClient = new StreamingClient(DEFAULT_CLIENT_CONNECTION);
+
+const interactionHandler = new CommandInteractionHandler();
 commandWindow.on("command", (c) => {
   interactionHandler.processCommand(c);
 });
 
-screen.key(['C-c'], function(ch, key) {
-  return process.exit(0);
+interactionHandler.on("output", (output) => {
+  outputConsole.log(output);
 });
+interactionHandler.on("error", (error) => {
+  outputConsole.error(output);
+});
+
+function quit() {
+  return process.exit(0);
+}
+
+interactionHandler.on("quit", quit);
+screen.key(['C-c'], quit);
 
 screen.title = 'anyWare Emulator';
 
-// Render the screen.
 screen.render();

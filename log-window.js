@@ -52,4 +52,8 @@ export default class OutputWindowStream extends blessed.Box {
   log(message) {
     this._outputWindow.log(message);
   }
+
+  error(error) {
+    this._outputWindow.log(error);
+  }
 }
