@@ -11,8 +11,8 @@ const StreamingClient = require('@anyware/streaming-client');
 
 const DEFAULT_CLIENT_CONNECTION = {
   protocol: "ws",
-  username: "anyware",
-  password: "anyware",
+  username: process.argv[2] || "anyware",
+  password: process.argv[3] || "anyware",
   host: "connect.shiftr.io:1884"
 };
 
@@ -46,6 +46,9 @@ function handleError(error) {
 
 function setupClient(options) {
   const settings = Object.assign({}, DEFAULT_CLIENT_CONNECTION, options || {});
+
+  outputConsole.log(`Using username ${settings.username}`);
+
   const client = new StreamingClient(settings);
   
   const updateConnectionStatus = () => {
