@@ -38,18 +38,52 @@ const outputConsole = new LogWindow({
   height: '100%'
 });
 
-const defaultClient = new StreamingClient(DEFAULT_CLIENT_CONNECTION);
+function handleError(error) {
+  const errorMessage = error.message || error;
+
+  outputConsole.error(errorMessage)
+}
+
+function setupClient(options) {
+  const settings = Object.assign({}, DEFAULT_CLIENT_CONNECTION, options || {});
+  const client = new StreamingClient(settings);
+  
+  const updateConnectionStatus = () => {
+    outputConsole.log(`Client Connected: ${client.connected}`);
+  };
+  client.on(StreamingClient.EVENT_CONNECT, updateConnectionStatus);
+  client.on(StreamingClient.EVENT_DISCONNECT, updateConnectionStatus);
+
+  client.on(StreamingClient.EVENT_ERROR, (error) => {
+    handleError(error);
+  });
+
+  return client;
+}
+
+let client = setupClient();
 
 const interactionHandler = new CommandInteractionHandler();
 commandWindow.on("command", (c) => {
   interactionHandler.processCommand(c);
 });
 
+interactionHandler.on("authenticate", (username, password) => {
+  if (client) {
+    client.close();
+  }
+
+  client = setupClient({
+    username: username,
+    password: password
+  });
+});
+
 interactionHandler.on("output", (output) => {
   outputConsole.log(output);
 });
 interactionHandler.on("error", (error) => {
-  outputConsole.error(output);
+  handleError(error);
 });
 
 function quit() {

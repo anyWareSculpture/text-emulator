@@ -2,6 +2,7 @@ const events = require('events');
 
 const COMMAND_EXIT = 'exit';
 const COMMAND_HELP = 'help';
+const COMMAND_AUTH = 'login';
 
 const ALL_COMMANDS = {
   [COMMAND_EXIT]: "Quit this program",
@@ -23,8 +24,16 @@ export default class CommandInteractionHandler extends events.EventEmitter {
     else if (commandName === COMMAND_HELP) {
       this._printHelp();
     }
+    else if (commandName === COMMAND_AUTH) {
+      if (commandArgs.length !== 2) {
+        return this._error("Please provide a username and password");
+      }
 
-    this.emit("output", command);
+      this.emit("authenticate", ...commandArgs);
+    }
+    else {
+      return this._error(`Unrecognized command ${commandName}`);
+    }
   }
 
   _quit() {
@@ -37,5 +46,9 @@ export default class CommandInteractionHandler extends events.EventEmitter {
 
       this.emit("output", `${commandName}\t${commandDescription}`);
     }
+  }
+
+  _error(message) {
+    this.emit("error", message);
   }
 }
