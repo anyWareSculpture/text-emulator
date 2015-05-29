@@ -1,5 +1,8 @@
 process.on('uncaughtException', function(err) {
-  require('fs').appendFileSync('error.log', err.stack);
+  const currentDate = new Date();
+  const currentDay = currentDate.toDateString();
+  const currentTime = currentDate.toTimeString();
+  require('fs').appendFileSync('error.log', `[${currentDay} ${currentTime}] ${err.stack}\n`);
 });
 
 const Emulator = require('./application');
