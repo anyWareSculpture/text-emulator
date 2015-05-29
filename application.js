@@ -74,7 +74,7 @@ export default class Emulator {
   }
 
   _error(error) {
-    const errorMessage = error.message || error;
+    const errorMessage = error.stack || error.message || error;
 
     this.outputConsole.error(errorMessage);
   }

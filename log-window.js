@@ -51,10 +51,25 @@ export default class OutputWindowStream extends blessed.Box {
   }
   
   log(message) {
-    this._outputWindow.log(message);
+    const timeString = this._logTime();
+
+    this._outputLines(message, (line) => `{blue-fg}{bold}${timeString}{/} ${line}`);
   }
 
-  error(error) {
-    this._outputWindow.log(`{red-fg}{bold}ERROR:{/} ${error}`);
+  error(message) {
+    const timeString = this._logTime();
+    this._outputLines(message, (line) => `{red-fg}{bold}${timeString} ERROR:{/} ${line}`);
+  }
+
+  _logTime() {
+    const currentDate = new Date();
+    const time = currentDate.toTimeString().split(' ')[0];
+    return `[${time}]`;
+  }
+
+  _outputLines(lines, formatter) {
+    for (let line of lines.split('\n')) {
+      this._outputWindow.log(formatter(line));
+    }
   }
 }
