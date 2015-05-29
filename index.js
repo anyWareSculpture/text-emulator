@@ -1,8 +1,14 @@
+let app;
 process.on('uncaughtException', function(err) {
   const currentDate = new Date();
   const currentDay = currentDate.toDateString();
   const currentTime = currentDate.toTimeString();
   require('fs').appendFileSync('error.log', `[${currentDay} ${currentTime}] ${err.stack}\n`);
+
+  if (app) {
+    // Not a best practice
+    app._error(err);
+  }
 });
 
 const Emulator = require('./application');
@@ -14,7 +20,7 @@ const DEFAULT_CLIENT_CONNECTION_OPTIONS = {
   host: "connect.shiftr.io:1884"
 };
 
-const app = new Emulator();
+app = new Emulator();
 
 const connectionOptions = Object.assign({}, DEFAULT_CLIENT_CONNECTION_OPTIONS);
 if (process.argv.length === 4) {

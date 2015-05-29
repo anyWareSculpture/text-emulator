@@ -4,9 +4,10 @@ const COMMAND_EXIT = 'exit';
 const COMMAND_HELP = 'help';
 const COMMAND_AUTH = 'login';
 
-const ALL_COMMANDS = {
+const COMMAND_DOCS = {
   [COMMAND_EXIT]: "Quit this program",
-  [COMMAND_HELP]: "Show this help information"
+  [COMMAND_HELP]: "Show this help information",
+  [COMMAND_AUTH]: "Login using a provided username and password"
 };
 
 export default class CommandInteractionHandler extends events.EventEmitter {
@@ -57,8 +58,9 @@ export default class CommandInteractionHandler extends events.EventEmitter {
   }
 
   _printHelp() {
-    for (let commandName of Object.keys(ALL_COMMANDS)) {
-      const commandDescription = ALL_COMMANDS[commandName];
+    this.emit("output", "=== HELP: ===\nType a command name followed by one or more whitespace separated arguments");
+    for (let commandName of Object.keys(COMMAND_DOCS)) {
+      const commandDescription = COMMAND_DOCS[commandName];
 
       this.emit("output", `${commandName}\t${commandDescription}`);
     }
