@@ -9,6 +9,9 @@ require('babel/register')({only: /@anyware/});
 const StreamingClient = require('@anyware/streaming-client');
 const {GameConstants, Sculpture} = require('@anyware/game-logic');
 
+const FRAMES_PER_SECOND = 60;
+const MILLISECONDS_PER_SECOND = 1000;
+
 export default class Emulator {
   constructor() {
     this.screen = this._createApplicationScreen();
@@ -62,6 +65,8 @@ export default class Emulator {
     if (!this._isSetup) {
       throw new Error("Cannot begin loop without being setup");
     }
+
+    setInterval(this._loop.bind(this), MILLISECONDS_PER_SECOND / FRAMES_PER_SECOND).unref();
   }
 
   _log(message) {
@@ -159,5 +164,17 @@ export default class Emulator {
     this._connectionOptions.password = password;
 
     this._setupStreamingClient();
+  }
+
+  _loop() {
+    this.sculpture.onFrame();
+
+    this._renderState();
+  }
+
+  _renderState() {
+    if (this.sculpture.currentGame.isKnocking) {
+      this._log(`Knock!`);
+    }
   }
 }
