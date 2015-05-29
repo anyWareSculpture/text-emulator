@@ -10,34 +10,50 @@ const ALL_COMMANDS = {
 };
 
 export default class CommandInteractionHandler extends events.EventEmitter {
-  constructor() {
+  /**
+   * Transforms user commands into appropriate methods on model.
+   * Other recognized commands with other functions are emitted as different
+   * events.
+   * @constructor
+   */
+  constructor(sculptureModel) {
     super();
+
+    this.sculpture = sculptureModel;
   }
 
   processCommand(command) {
     let [commandName, ...commandArgs] = command.split(/\s+/);
     commandName = commandName.toLowerCase();
 
-    if (commandName === COMMAND_EXIT) {
-      this._quit();
-    }
-    else if (commandName === COMMAND_HELP) {
-      this._printHelp();
-    }
-    else if (commandName === COMMAND_AUTH) {
-      if (commandArgs.length !== 2) {
-        return this._error("Please provide a username and password");
-      }
+    const commands = {
+      [COMMAND_EXIT]: this._commandQuit.bind(this),
+      [COMMAND_HELP]: this._commandHelp.bind(this),
+      [COMMAND_AUTH]: this._commandAuthenticate.bind(this)
+    };
 
-      this.emit("authenticate", ...commandArgs);
-    }
-    else {
+    const commandHandler = commands[commandName];
+    if (!commandHandler) {
       return this._error(`Unrecognized command ${commandName}`);
     }
+
+    commandHandler(commandArgs);
   }
 
-  _quit() {
+  _commandQuit() {
     this.emit("quit");
+  }
+
+  _commandHelp() {
+    this._printHelp();
+  }
+
+  _commandAuthenticate(commandArgs) {
+    if (commandArgs.length !== 2) {
+      return this._error("Please provide a username and password");
+    }
+
+    this.emit("authenticate", ...commandArgs);
   }
 
   _printHelp() {

@@ -31,6 +31,7 @@ export default class OutputWindowStream extends blessed.Box {
       left: 0,
       width: '100%',
       height: '100%-3',
+      tags: true,
       scrollable: true,
       mouse: true,
       border: {
@@ -54,6 +55,6 @@ export default class OutputWindowStream extends blessed.Box {
   }
 
   error(error) {
-    this._outputWindow.log(error);
+    this._outputWindow.log(`{red-fg}{bold}ERROR:{/} ${error}`);
   }
 }
