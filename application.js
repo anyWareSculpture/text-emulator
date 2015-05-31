@@ -145,8 +145,11 @@ export default class Emulator {
   }
 
   _handleStateUpdate(update) {
-    this._log(`Sending state update ${update}`);
-    this.client.sendStateUpdate(update);
+    this._log(`Sending state update ${JSON.stringify(update)}`);
+
+    if (this.client.connected) {
+      this.client.sendStateUpdate(update);
+    }
   }
 
   _setupInteractionHandler() {
