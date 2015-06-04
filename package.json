@@ -18,8 +18,8 @@
   },
   "homepage": "https://github.com/anyWareSculpture/text-emulator",
   "dependencies": {
-    "@anyware/game-logic": "^1.0.0",
-    "@anyware/streaming-client": "^1.0.7",
+    "@anyware/game-logic": "^2.2.3",
+    "@anyware/streaming-client": "^1.2.2",
     "babel": "^5.4.7",
     "blessed": "^0.1.60"
   }
