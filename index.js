@@ -11,7 +11,7 @@ process.on('uncaughtException', function(err) {
   }
 });
 
-const Emulator = require('./application');
+const EmulatorApp = require('./application');
 
 const DEFAULT_CLIENT_CONNECTION_OPTIONS = {
   protocol: "ws",
@@ -20,7 +20,7 @@ const DEFAULT_CLIENT_CONNECTION_OPTIONS = {
   host: "connect.shiftr.io:1884"
 };
 
-app = new Emulator();
+app = new EmulatorApp();
 
 const connectionOptions = Object.assign({}, DEFAULT_CLIENT_CONNECTION_OPTIONS);
 if (process.argv.length === 4) {
@@ -28,9 +28,7 @@ if (process.argv.length === 4) {
   connectionOptions.username = process.argv[2];
   connectionOptions.password = process.argv[3];
 }
+
 app.connectAndSetup(connectionOptions);
 
-app.beginLoop();
-
 app.render();
-
