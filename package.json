@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "babel-node index.js $CREDENTIALS"
+    "start": "babel-node --stage 0 index.js $CREDENTIALS"
   },
   "repository": {
     "type": "git",
@@ -21,6 +21,7 @@
     "@anyware/game-logic": "^3.0.1",
     "@anyware/streaming-client": "^1.2.2",
     "babel": "^5.4.7",
-    "blessed": "^0.1.60"
+    "blessed": "^0.1.60",
+    "flux": "^2.0.3"
   }
 }

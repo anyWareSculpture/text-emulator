@@ -1,8 +1,12 @@
 const blessed = require('blessed');
 
+const {Dispatcher} = require('flux');
+
 const OutputWindow = require('./output-window');
+const PanelView = require('./panel-view');
 
 const StreamingClient = require('@anyware/streaming-client');
+const {SculptureStore} = require('@anyware/game-logic');
 
 export default class EmulatorApp {
   constructor() {
@@ -15,9 +19,10 @@ export default class EmulatorApp {
     this.outputConsole = null;
     
     this.client = null;
-    this.sculpture = null;
-
     this._connectionOptions = {};
+
+    this.dispatcher = new Dispatcher();
+    this.sculpture = new SculptureStore(this.dispatcher);
 
     this._layoutScreen();
   }
@@ -70,7 +75,13 @@ export default class EmulatorApp {
   }
 
   _setupViews() {
-
+    this.panelView = new PanelView(this.sculpture, {
+      parent: this.screen,
+      top: 0,
+      left: 0,
+      width: '50%',
+      height: '50%'
+    });
   }
 
   _setupCommandInput() {
