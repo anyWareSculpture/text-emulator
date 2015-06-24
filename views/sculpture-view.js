@@ -28,11 +28,11 @@ export default class SculptureView extends blessed.Box {
     content += `{yellow-fg}status:{/yellow-fg} ${this.store.data.get('status')}\n`;
 
     if (this.store.isPlayingMoleGame) {
-      content += '{yellow-fg}mole:  {/yellow-fg}';
+      content += '{yellow-fg}mole:{/yellow-fg} ';
 
       const moleGame = this.store.data.get('mole');
       for (let propName of Object.keys(MoleGameLogic.trackedProperties)) {
-        content += `{yellow-fg}${propName}:{/yellow-fg} ${moleGame.get(propName)} `;
+        content += `{yellow-fg}${propName}:{/yellow-fg} ${moleGame.get(propName)}  `;
       }
     }
     else {

@@ -2,6 +2,8 @@ const blessed = require('blessed');
 
 const {SculptureStore} = require('@anyware/game-logic');
 
+const MoleGameAnimations = require('./animations/mole-game-animations');
+
 const VIEW_TITLE = "{center}{bold}Panels{/bold}{/center}";
 const CELL_WIDTH = 3;
 
@@ -19,20 +21,36 @@ export default class PanelView extends blessed.Box {
     }, windowOptions));
 
     this.store = store;
-    this.renderPanels();
 
+    this._animating = false;
+
+    this.renderPanels();
     this.store.on(SculptureStore.EVENT_CHANGE, this.renderPanels.bind(this));
   }
 
   renderPanels() {
+    this._playAvailableAnimations()
+    if (this._animating) {
+      return;
+    }
+
     const lightArray = this.store.data.get('lights');
     
-    let content = VIEW_TITLE + '\n';
-    content += this.formatPanelIDs(lightArray) + '\n';
+    let content = this.formatPanelIDs(lightArray) + '\n';
 
     const formattedStrips = Array.from(this.formatStrips(lightArray));
     content += formattedStrips.join('\n');
 
+    this.setBodyContent(content);
+  }
+
+  /**
+   * Sets the view's body content to the given content leaving the title
+   * and any other pertinent details in tact
+   */
+  setBodyContent(bodyContent) {
+    let content = VIEW_TITLE + '\n';
+    content += bodyContent;
     this.setContent(content);
   }
 
@@ -100,5 +118,23 @@ export default class PanelView extends blessed.Box {
       default:
         return;
     }
+  }
+
+  _playAvailableAnimations() {
+    if (this.store.isPlayingMoleGame) {
+      const animation = this.store.currentGame.data.get("animation");
+      if (animation) {
+        this._animating = true;
+
+        MoleGameAnimations.playAnimation(animation, this, this._moleGameAnimationComplete.bind(this));
+      }
+    }
+  }
+
+  _moleGameAnimationComplete() {
+    this._animating = false;
+
+    this.renderPanels();
+    this.store.sculptureActionCreator.sendEndMoleGameAnimation();
   }
 }
