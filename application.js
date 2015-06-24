@@ -80,7 +80,7 @@ export default class EmulatorApp {
       top: 0,
       left: 0,
       width: '50%',
-      height: '50%'
+      height: 6
     });
   }
 

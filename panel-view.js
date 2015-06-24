@@ -2,6 +2,9 @@ const blessed = require('blessed');
 
 const {GameConstants} = require('@anyware/game-logic');
 
+const VIEW_TITLE = "{center}{bold}Panel View:{/bold}{/center}";
+const CELL_WIDTH = 3;
+
 export default class PanelView extends blessed.Box {
   constructor(store, windowOptions) {
     super(Object.assign({
@@ -24,7 +27,11 @@ export default class PanelView extends blessed.Box {
   renderPanels() {
     const lightArray = this.store.data.get('lights');
     const formattedStrips = Array.from(this.formatStrips(lightArray));
-    this.setContent(formattedStrips.join('\n'));
+    
+    let content = VIEW_TITLE + '\n';
+    content += formattedStrips.join('\n');
+
+    this.setContent(content);
   }
 
   *formatStrips(lightArray) {
@@ -44,9 +51,8 @@ export default class PanelView extends blessed.Box {
   formatPanel(lightArray, stripId, panelId) {
     const panelIntensity = lightArray.getIntensity(stripId, panelId);
 
-    const cellWidth = 3;
-    // pad cell to cellWidth and right align in cell
-    let formattedPanel = ((' '.repeat(cellWidth)) + panelIntensity).slice(-cellWidth);
+    // pad cell to CELL_WIDTH and right align in cell
+    let formattedPanel = ((' '.repeat(CELL_WIDTH)) + panelIntensity).slice(-CELL_WIDTH);
 
     if (panelIntensity > 50) {
       formattedPanel = `{bold}${formattedPanel}{/bold}`;
