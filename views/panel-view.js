@@ -85,7 +85,7 @@ export default class PanelView extends blessed.Box {
 
     const panelActive = lightArray.isActive(stripId, panelId);
     if (panelActive) {
-      formattedPanel = `{bright-red-bg}${formattedPanel}{/bright-red-bg}`;
+      formattedPanel = `{bright-cyan-bg}${formattedPanel}{/bright-cyan-bg}`;
     }
 
     return formattedPanel;
