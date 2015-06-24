@@ -26,12 +26,32 @@ export default class PanelView extends blessed.Box {
 
   renderPanels() {
     const lightArray = this.store.data.get('lights');
-    const formattedStrips = Array.from(this.formatStrips(lightArray));
     
     let content = VIEW_TITLE + '\n';
+    content += this.formatPanelIDs(lightArray) + '\n';
+
+    const formattedStrips = Array.from(this.formatStrips(lightArray));
     content += formattedStrips.join('\n');
 
     this.setContent(content);
+  }
+
+  formatPanelIDs(lightArray) {
+    let longestPanelIdList = null;
+    for (let stripId of lightArray.stripIds) {
+      const panelIds = lightArray.get(stripId).panelIds;
+      if (!longestPanelIdList || panelIds.length > longestPanelIdList.length) {
+        longestPanelIdList = panelIds;
+      }
+    }
+
+    let result = '{yellow-fg}ID';
+    for (let panelId of longestPanelIdList) {
+      result += ' ' + ((' '.repeat(CELL_WIDTH)) + panelId).slice(-CELL_WIDTH);
+    }
+    result += '{/yellow-fg}';
+
+    return result;
   }
 
   *formatStrips(lightArray) {
