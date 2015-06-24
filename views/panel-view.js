@@ -2,7 +2,7 @@ const blessed = require('blessed');
 
 const {SculptureStore} = require('@anyware/game-logic');
 
-const VIEW_TITLE = "{center}{bold}Panel View:{/bold}{/center}";
+const VIEW_TITLE = "{center}{bold}Panels{/bold}{/center}";
 const CELL_WIDTH = 3;
 
 export default class PanelView extends blessed.Box {

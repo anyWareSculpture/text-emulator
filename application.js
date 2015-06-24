@@ -4,6 +4,7 @@ const {Dispatcher} = require('flux');
 
 const OutputWindow = require('./output-window');
 const PanelView = require('./views/panel-view');
+const SculptureView = require('./views/sculpture-view');
 
 const CommandInput = require('./command-input');
 
@@ -84,9 +85,17 @@ export default class EmulatorApp {
   }
 
   _setupViews() {
-    this.panelView = new PanelView(this.sculpture, {
+    this.sculptureView = new SculptureView(this.sculpture, {
       parent: this.screen,
       top: 0,
+      left: 0,
+      width: '50%',
+      height: 4
+    });
+
+    this.panelView = new PanelView(this.sculpture, {
+      parent: this.screen,
+      top: 4,
       left: 0,
       width: '50%',
       height: 7
