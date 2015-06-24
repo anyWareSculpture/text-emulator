@@ -1,5 +1,10 @@
 const blessed = require('blessed');
 
+const WELCOME_MESSAGE = (
+  "Welcome!\n" +
+  "Press Ctrl + C or type 'exit' to exit.\n"
+);
+
 export default class OutputWindow extends blessed.Box {
   constructor(windowOptions) {
     super(windowOptions);
@@ -46,6 +51,8 @@ export default class OutputWindow extends blessed.Box {
         }
       }
     });
+
+    this._outputWindow.log(WELCOME_MESSAGE);
   }
   
   log(message) {

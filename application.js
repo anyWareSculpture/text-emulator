@@ -3,7 +3,9 @@ const blessed = require('blessed');
 const {Dispatcher} = require('flux');
 
 const OutputWindow = require('./output-window');
-const PanelView = require('./panel-view');
+const PanelView = require('./views/panel-view');
+
+const CommandInput = require('./command-input');
 
 const StreamingClient = require('@anyware/streaming-client');
 const {SculptureStore} = require('@anyware/game-logic');
@@ -69,9 +71,9 @@ export default class EmulatorApp {
   }
 
   _layoutScreen() {
+    this._setupOutputConsole();
     this._setupViews();
     this._setupCommandInput();
-    this._setupOutputConsole();
   }
 
   _setupViews() {
@@ -85,7 +87,33 @@ export default class EmulatorApp {
   }
 
   _setupCommandInput() {
+    this.commandInput = new CommandInput(this.dispatcher, {
+      parent: this.screen,
+      bottom: 0,
+      left: 0,
+      width: '50%',
+      height: 4
+    });
+    this.commandInput.focusInput();
 
+    this.commandInput.on(CommandInput.EVENT_OUTPUT, (text) => {
+      this.outputConsole.log(text);
+    });
+
+    this.commandInput.on(CommandInput.EVENT_ERROR, (text) => {
+      this.outputConsole.error(text);
+    });
+
+    this.commandInput.on(CommandInput.EVENT_AUTH, (username, password) => {
+      this._connectionOptions.username = username;
+      this._connectionOptions.password = password;
+
+      this._setupStreamingClient(); 
+    });
+
+    this.commandInput.on(CommandInput.EVENT_QUIT, (text) => {
+      this.quit();
+    });
   }
 
   _setupOutputConsole() {
