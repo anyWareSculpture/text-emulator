@@ -90,7 +90,7 @@ export default class EmulatorApp {
       top: 0,
       left: 0,
       width: '50%',
-      height: 4
+      height: 5
     });
 
     this.panelView = new PanelView(this.sculpture, {
