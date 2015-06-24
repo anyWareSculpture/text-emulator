@@ -93,7 +93,7 @@ export default class EmulatorApp {
       height: 5
     });
 
-    this.panelView = new PanelView(this.sculpture, {
+    this.panelView = new PanelView(this.sculpture, this.dispatcher, {
       parent: this.screen,
       top: 4,
       left: 0,

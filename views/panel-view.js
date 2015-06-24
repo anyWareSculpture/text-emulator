@@ -1,6 +1,6 @@
 const blessed = require('blessed');
 
-const {SculptureStore} = require('@anyware/game-logic');
+const {SculptureStore, MoleGameActionCreator} = require('@anyware/game-logic');
 
 const MoleGameAnimations = require('./animations/mole-game-animations');
 
@@ -8,7 +8,7 @@ const VIEW_TITLE = "{center}{bold}Panels{/bold}{/center}";
 const CELL_WIDTH = 3;
 
 export default class PanelView extends blessed.Box {
-  constructor(store, windowOptions) {
+  constructor(store, dispatcher, windowOptions) {
     super(Object.assign({
       tags: true,
       border: {
@@ -21,19 +21,15 @@ export default class PanelView extends blessed.Box {
     }, windowOptions));
 
     this.store = store;
+    this.moleGameActionCreator = new MoleGameActionCreator(dispatcher);
 
     this._animating = false;
 
     this.renderPanels();
-    this.store.on(SculptureStore.EVENT_CHANGE, this.renderPanels.bind(this));
+    this.store.on(SculptureStore.EVENT_CHANGE, this._handleChanges.bind(this));
   }
 
   renderPanels() {
-    this._playAvailableAnimations()
-    if (this._animating) {
-      return;
-    }
-
     const lightArray = this.store.data.get('lights');
     
     let content = this.formatPanelIDs(lightArray) + '\n';
@@ -42,6 +38,15 @@ export default class PanelView extends blessed.Box {
     content += formattedStrips.join('\n');
 
     this.setBodyContent(content);
+  }
+
+  _handleChanges() {
+    this._playAvailableAnimations()
+    if (this._animating) {
+      return;
+    }
+
+    this.renderPanels();
   }
 
   /**
@@ -121,6 +126,10 @@ export default class PanelView extends blessed.Box {
   }
 
   _playAvailableAnimations() {
+    if (this._animating) {
+      return;
+    }
+
     if (this.store.isPlayingMoleGame) {
       const animation = this.store.currentGame.data.get("animation");
       if (animation) {
@@ -135,6 +144,6 @@ export default class PanelView extends blessed.Box {
     this._animating = false;
 
     this.renderPanels();
-    this.store.sculptureActionCreator.sendEndMoleGameAnimation();
+    this.moleGameActionCreator.sendFinishAnimation();
   }
 }
