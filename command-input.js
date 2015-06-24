@@ -33,6 +33,8 @@ export default class CommandInput extends blessed.Form {
     }, options));
 
     this.panelsActionCreator = new PanelsActionCreator(dispatcher);
+    this.history = [];
+    this.historyIndex = this.history.length;
 
     this._input = blessed.textbox({
       parent: this,
@@ -52,6 +54,8 @@ export default class CommandInput extends blessed.Form {
       }
     });
     this._input.on('submit', this._submitCommand.bind(this));
+    this._input.key('up', this._historyPrevious.bind(this));
+    this._input.key('down', this._historyNext.bind(this));
 
     blessed.box({
       parent: this,
@@ -74,6 +78,8 @@ export default class CommandInput extends blessed.Form {
     if (!command) {
       return;
     }
+    this.history.push(command);
+    this.historyIndex = this.history.length;
     this._output(command);
 
     this._input.clearValue();
@@ -89,6 +95,27 @@ export default class CommandInput extends blessed.Form {
 
   _error(text) {
     this.emit(CommandInput.EVENT_ERROR, text);
+  }
+
+  _historyPrevious() {
+    if (this.historyIndex <= 0) {
+      return;
+    }
+    
+    this.historyIndex -= 1;
+    
+    this._input.setValue(this.history[this.historyIndex]);
+    this.focusInput();
+  }
+
+  _historyNext() {
+    if (this.historyIndex >= this.history.length) {
+      return;
+    }
+
+    this.historyIndex += 1;
+    this._input.setValue(this.history[this.historyIndex]);
+    this.focusInput();
   }
 
   _handleCommand(command) {
@@ -137,11 +164,11 @@ export default class CommandInput extends blessed.Form {
   _commandAuthenticate(args) {
     if (args.length !== 2) {
       this._error('Invalid number of arguments:');
-      this._error('Usage: login <username> <password>');
+      this._error('Usage: login username password');
       return;
     }
 
-    [username, password] = args;
+    const [username, password] = args;
     this.emit(CommandInput.EVENT_AUTH, username, password);
   }
 
@@ -154,3 +181,4 @@ export default class CommandInput extends blessed.Form {
     }
   }
 }
+
