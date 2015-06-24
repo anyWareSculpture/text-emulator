@@ -3,6 +3,7 @@ const blessed = require('blessed');
 const {PanelsActionCreator} = require('@anyware/game-logic');
 
 const COMMAND_PANEL = "panel";
+const COMMAND_PRESS = "press";
 const COMMAND_EXIT = "exit";
 const COMMAND_HELP = "help";
 const COMMAND_AUTH = "login";
@@ -11,7 +12,8 @@ const COMMAND_DOCS = {
   [COMMAND_EXIT]: "Quit this program",
   [COMMAND_HELP]: "Show this help information",
   [COMMAND_AUTH]: "Login using a provided username and password",
-  [COMMAND_PANEL]: "Activate or deactivate a specified panel"
+  [COMMAND_PANEL]: "Activate or deactivate a specified panel",
+  [COMMAND_PRESS]: "Press a panel for the given number of milliseconds"
 };
 
 export default class CommandInput extends blessed.Form {
@@ -128,6 +130,9 @@ export default class CommandInput extends blessed.Form {
       case COMMAND_PANEL:
         this._commandPanel(commandArgs);
         break;
+      case COMMAND_PRESS:
+        this._commandPress(commandArgs);
+        break;
       case COMMAND_AUTH:
         this._commandAuthenticate(commandArgs);
         break;
@@ -142,8 +147,7 @@ export default class CommandInput extends blessed.Form {
 
   _commandPanel(args) {
     if (args.length !== 3) {
-      this._error('Invalid number of arguments:');
-      this._error('Usage: panel 1 3 1');
+      this._error('Usage: panel stripId panelId pressed');
       return;
     }
 
@@ -161,9 +165,23 @@ export default class CommandInput extends blessed.Form {
     this.panelsActionCreator.sendPanelPressed(stripId, panelId, active);
   }
 
+  _commandPress(args) {
+    if (args.length !== 2 && args.length !== 3) {
+      this._error(`Usage: press stripId panelId [endDelay]`);
+      return;
+    }
+
+    let [stripId, panelId, ...endDelay] = args;
+    endDelay = endDelay.length ? endDelay[0] : 100;
+
+    this.panelsActionCreator.sendPanelPressed(stripId, panelId, true);
+    setTimeout(() => {
+      this.panelsActionCreator.sendPanelPressed(stripId, panelId, false);
+    }, endDelay);
+  }
+
   _commandAuthenticate(args) {
     if (args.length !== 2) {
-      this._error('Invalid number of arguments:');
       this._error('Usage: login username password');
       return;
     }
