@@ -19,10 +19,32 @@ export default class MoleGameAnimations {
   }
 
   static playSuccessAnimation(view, completeCallback) {
-    view.setBodyContent("{green-fg}{center}{blink}SUCCESS!!{/blink}{/center}{/green-fg}");
+    const frames = [
+      {align: "center", line: 0},
+      {align: "left", line: 1},
+      {align: "right", line: 2},
+      {align: "left", line: 2},
+      {align: "right", line: 1},
+      {align: "left", line: 0},
+      {align: "right", line: 0},
+      {align: "center", line: 2},
+      {align: "center", line: 1}
+    ];
     
-    setTimeout(() => {
-      completeCallback();
-    }, 2000);
+    const playFrame = (frameIndex) => {
+      const lines = ['', '', ''];
+      const {align, line} = frames[frameIndex];
+      lines[line] = `{${align}}{green-fg}{bold}SUCCESS!!{/bold}{/green-fg}{/${align}}`;
+      view.setBodyContent(lines.join('\n'));
+      view.screen.render();
+      
+      if (frameIndex < frames.length - 1) {
+        setTimeout(() => playFrame(frameIndex + 1), 500);
+      }
+      else {
+        completeCallback();
+      }
+    };
+    playFrame(0);
   }
 }
