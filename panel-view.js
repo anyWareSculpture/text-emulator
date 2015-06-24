@@ -37,7 +37,7 @@ export default class PanelView extends blessed.Box {
   *formatStrips(lightArray) {
     for (let stripId of lightArray.stripIds) {
       const formattedPanels = Array.from(this.formatStripPanels(lightArray, stripId));
-      yield `${stripId}: ${formattedPanels.join(' ')}`;
+      yield `{yellow-fg}${stripId}:{/yellow-fg} ${formattedPanels.join(' ')}`;
     }
   }
 
