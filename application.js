@@ -24,7 +24,14 @@ export default class EmulatorApp {
     this._connectionOptions = {};
 
     this.dispatcher = new Dispatcher();
+    this.dispatcher.register((payload) => {
+      this.outputConsole.log(`Sent action: ${JSON.stringify(payload)}`);
+    });
+
     this.sculpture = new SculptureStore(this.dispatcher);
+    this.sculpture.on(SculptureStore.EVENT_CHANGE, (changes) => {
+      this.outputConsole.log(`Store changed: ${JSON.stringify(changes)}`);
+    });
 
     this._layoutScreen();
   }

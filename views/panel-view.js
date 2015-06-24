@@ -1,6 +1,6 @@
 const blessed = require('blessed');
 
-const {GameConstants} = require('@anyware/game-logic');
+const {SculptureStore} = require('@anyware/game-logic');
 
 const VIEW_TITLE = "{center}{bold}Panel View:{/bold}{/center}";
 const CELL_WIDTH = 3;
@@ -21,7 +21,7 @@ export default class PanelView extends blessed.Box {
     this.store = store;
     this.renderPanels();
 
-    this.store.on(GameConstants.EVENT_CHANGE, this.renderPanels.bind(this));
+    this.store.on(SculptureStore.EVENT_CHANGE, this.renderPanels.bind(this));
   }
 
   renderPanels() {
@@ -65,7 +65,7 @@ export default class PanelView extends blessed.Box {
 
     const panelActive = lightArray.isActive(stripId, panelId);
     if (panelActive) {
-      formattedPanel = `{white-bg}${formattedPanel}{/white-bg}`;
+      formattedPanel = `{bright-red-bg}${formattedPanel}{/bright-red-bg}`;
     }
 
     return formattedPanel;
