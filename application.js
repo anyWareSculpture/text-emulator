@@ -9,18 +9,18 @@ const SculptureView = require('./views/sculpture-view');
 const CommandInput = require('./command-input');
 
 const StreamingClient = require('@anyware/streaming-client');
-const {SculptureStore} = require('@anyware/game-logic');
+const {SculptureStore, SculptureActionCreator} = require('@anyware/game-logic');
 
 export default class EmulatorApp {
   constructor() {
     this.screen = this._createApplicationScreen();
-    
+
     this.sculptureView = null;
     this.panelView = null;
     this.diskView = null;
     this.commandInput = null;
     this.outputConsole = null;
-    
+
     this.client = null;
     this._connectionOptions = {};
 
@@ -31,8 +31,11 @@ export default class EmulatorApp {
 
     this.sculpture = new SculptureStore(this.dispatcher);
     this.sculpture.on(SculptureStore.EVENT_CHANGE, (changes) => {
-      this.outputConsole.log(`Store changed: ${JSON.stringify(changes)}`);
+      this.outputConsole.log(`Sent state update: ${JSON.stringify(changes)}`);
+
+      this.client.sendStateUpdate(changes);
     });
+    this.sculptureActionCreator = new SculptureActionCreator(this.dispatcher);
 
     this._layoutScreen();
   }
@@ -48,7 +51,7 @@ export default class EmulatorApp {
     this._connectionOptions = options;
     this._setupStreamingClient();
   }
-  
+
   /**
    * Renders the main application screen
    */
@@ -124,7 +127,7 @@ export default class EmulatorApp {
       this._connectionOptions.username = username;
       this._connectionOptions.password = password;
 
-      this._setupStreamingClient(); 
+      this._setupStreamingClient();
     });
 
     this.commandInput.on(CommandInput.EVENT_QUIT, (text) => {
@@ -164,10 +167,18 @@ export default class EmulatorApp {
       }
     });
 
-    //TODO: Bind to state updates and commands incoming
+    this.client.on(StreamingClient.EVENT_STATE_UPDATE, this._onStateUpdate.bind(this));
   }
 
   _onConnectionStatusChange() {
     this._log(`Client Connected: ${this.client.connected}`);
+  }
+
+  _onStateUpdate(update, metadata) {
+    update.metadata = metadata;
+
+    this._log(`Got state update: ${JSON.stringify(update)}`);
+
+    this.sculptureActionCreator.sendMergeState(update);
   }
 }
