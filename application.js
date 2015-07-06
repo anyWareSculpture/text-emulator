@@ -3,8 +3,9 @@ const blessed = require('blessed');
 const {Dispatcher} = require('flux');
 
 const OutputWindow = require('./output-window');
-const PanelView = require('./views/panel-view');
 const SculptureView = require('./views/sculpture-view');
+const PanelView = require('./views/panel-view');
+const DiskView = require('./views/disk-view');
 
 const CommandInput = require('./command-input');
 
@@ -88,20 +89,35 @@ export default class EmulatorApp {
   }
 
   _setupViews() {
+    let totalHeight = 0;
+
+    const sculptureViewHeight = 5;
     this.sculptureView = new SculptureView(this.sculpture, {
       parent: this.screen,
       top: 0,
       left: 0,
       width: '50%',
-      height: 5
+      height: sculptureViewHeight
     });
+    totalHeight += sculptureViewHeight;
 
+    const panelViewHeight = 7;
     this.panelView = new PanelView(this.sculpture, this.dispatcher, {
       parent: this.screen,
-      top: 5,
+      top: totalHeight,
       left: 0,
       width: '50%',
-      height: 7
+      height: panelViewHeight
+    });
+    totalHeight += panelViewHeight;
+
+    const diskViewHeight = 6;
+    this.diskView = new DiskView(this.sculpture, this.dispatcher, {
+      parent: this.screen,
+      top: totalHeight,
+      left: 0,
+      width: '50%',
+      height: diskViewHeight
     });
   }
 

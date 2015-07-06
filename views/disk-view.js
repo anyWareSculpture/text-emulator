@@ -29,7 +29,7 @@ export default class PanelView extends blessed.Box {
   renderDisks() {
     const disks = this.store.data.get('disks');
     
-    const content = this.formatDisks(disks).join('\n');
+    const content = Array.from(this.formatDisks(disks)).join('\n');
 
     this.setBodyContent(content);
   }
@@ -57,8 +57,17 @@ export default class PanelView extends blessed.Box {
     for (let diskId of disks) {
       const disk = disks.get(diskId);
       
-      yield `${diskId}: p: ${disk.getPosition()} d: ${disk.getDirection()} s: ${disk.getState()} u:'${disk.getUser()}'`;
+      yield this.formatDisk(diskId, disk);
     }
+  }
+
+  formatDisk(diskId, disk) {
+    let formattedDisk =`{yellow-fg}${diskId}:{/yellow-fg}  `;
+    formattedDisk += `{yellow-fg}POS:{/yellow-fg} ${disk.getPosition()} `;
+    formattedDisk += `{yellow-fg}DIR:{/yellow-fg} ${disk.getDirection()} `;
+    formattedDisk += `{yellow-fg}STATE:{/yellow-fg} ${disk.getState()} `;
+    formattedDisk += `{yellow-fg}USER:{/yellow-fg} '${disk.getUser()}'`;
+    return formattedDisk;
   }
 
   _colorFromKeyword(keyword) {
