@@ -3,7 +3,16 @@ process.on('uncaughtException', function(err) {
   const currentDate = new Date();
   const currentDay = currentDate.toDateString();
   const currentTime = currentDate.toTimeString();
-  require('fs').appendFileSync('error.log', `[${currentDay} ${currentTime}] ${err.stack}\n`);
+
+  let stack = "";
+  try {
+    stack = err.stack;
+  }
+  catch (error) {
+    stack = err.toString();
+  }
+
+  require('fs').appendFileSync('error.log', `[${currentDay} ${currentTime}] ${stack}\n`);
 
   if (app) {
     // Not a best practice
