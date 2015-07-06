@@ -23,10 +23,9 @@ process.on('uncaughtException', function(err) {
 const EmulatorApp = require('./application');
 
 const DEFAULT_CLIENT_CONNECTION_OPTIONS = {
-  protocol: "ws",
   username: "anyware",
   password: "anyware",
-  host: "connect.shiftr.io:1884"
+  host: "connect.shiftr.io"
 };
 
 app = new EmulatorApp();
