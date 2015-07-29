@@ -21,7 +21,15 @@ export default class MoleGameAnimations {
   static playSuccessAnimation(view, completeCallback) {
     const frames = [
       ["split", "center", "split"],
-      ["center", "split", "center"]
+      ["center", "split", "center"],
+      ["split", "center", "split"],
+      ["center", "split", "center"],
+      ["split", "center", "split"],
+      ["center", "split", "center"],
+      ["split", "center", "split"],
+      ["center", "split", "center"],
+      ["split", "center", "split"],
+      ["center", "split", "center"],
     ];
     
     const playFrame = (frameIndex) => {
@@ -43,12 +51,14 @@ export default class MoleGameAnimations {
       view.setBodyContent(lines.join('\n'));
       view.screen.render();
       
+      let nextFunction;
       if (frameIndex < frames.length - 1) {
-        setTimeout(() => playFrame(frameIndex + 1), 1000);
+        nextFunction = () => playFrame(frameIndex + 1);
       }
       else {
-        completeCallback();
+        nextFunction = completeCallback;
       }
+      setTimeout(nextFunction, 500);
     };
     playFrame(0);
   }
