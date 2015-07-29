@@ -179,7 +179,7 @@ export default class EmulatorApp {
       // Temporarily here until the full game transitions are implemented
       if (!this.sculpture.isPlayingMoleGame) {
         this._log("Starting mole game...");
-        this.sculpture.startMoleGame();
+        this.sculptureActionCreator.sendStartMoleGame();
       }
     });
 
