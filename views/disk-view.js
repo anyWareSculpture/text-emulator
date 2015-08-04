@@ -22,7 +22,6 @@ export default class DiskView extends blessed.Box {
 
     this.store = store;
 
-    this._animating = false;
     this._disksActionCreator = new DisksActionCreator(dispatcher);
 
     this.renderDisks();
@@ -39,10 +38,22 @@ export default class DiskView extends blessed.Box {
     this.setBodyContent(content);
   }
 
-  _handleChanges() {
-    this._playAvailableAnimations()
-    if (this._animating) {
-      return;
+  resetDisks() {
+    // emulate the sculpture by doing this after a small interval
+    setTimeout(() => {
+      const disks = this.store.data.get('disks');
+
+      for (let diskId of disks) {
+        this._disksActionCreator.sendDiskUpdate(diskId, {
+          position: 0
+        });
+      }
+    }, 1000);
+  }
+
+  _handleChanges(changes) {
+    if (changes.hasOwnProperty('disk') && changes.disk.hasOwnProperty('level')) {
+      this.resetDisks();
     }
 
     this.renderDisks();
@@ -94,12 +105,6 @@ export default class DiskView extends blessed.Box {
     };
     
     return colorMappings[keyword] || "";
-  }
-
-  _playAvailableAnimations() {
-    if (this._animating) {
-      return;
-    }
   }
 
   _updateDiskPositions() {
