@@ -72,15 +72,18 @@ export default class PanelView extends blessed.Box {
     for (let panelId of longestPanelIdList) {
       result += ' ' + ((' '.repeat(CELL_WIDTH)) + panelId).slice(-CELL_WIDTH);
     }
-    result += '{/yellow-fg}';
+    result += '   | max{/yellow-fg}';
 
     return result;
   }
 
   *formatStrips(lightArray) {
+    const maxIntensityWidth = 3;
     for (let stripId of lightArray.stripIds) {
       const formattedPanels = Array.from(this.formatStripPanels(lightArray, stripId));
-      yield `{yellow-fg}${stripId}:{/yellow-fg} ${formattedPanels.join(' ')}`;
+
+      const max = '  {yellow-fg}|{/yellow-fg} ' + ((' '.repeat(maxIntensityWidth)) + lightArray.getMaxIntensity(stripId)).slice(-maxIntensityWidth);
+      yield `{yellow-fg}${stripId}:{/yellow-fg} ${formattedPanels.join(' ')} ${max}`;
     }
   }
 
