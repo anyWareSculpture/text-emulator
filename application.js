@@ -65,7 +65,13 @@ export default class EmulatorApp {
   }
 
   _error(error) {
-    const errorMessage = error.stack || error.message || error;
+    let errorMessage;
+    try {
+      errorMessage = error.stack;
+    }
+    catch (stackError) {
+      errorMessage = error.toString();
+    }
 
     this.outputConsole.error(errorMessage);
   }
