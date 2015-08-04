@@ -2,7 +2,7 @@ const blessed = require('blessed');
 
 const {SculptureStore, SculptureActionCreator} = require('@anyware/game-logic');
 
-const MoleGameAnimations = require('./animations/mole-game-animations');
+const PanelAnimations = require('./animations/panel-animations');
 
 const VIEW_TITLE = "{center}{bold}Panels{/bold}{/center}";
 const CELL_WIDTH = 3;
@@ -136,7 +136,7 @@ export default class PanelView extends blessed.Box {
   }
 
   _playSuccessAnimation() {
-    setTimeout(this._animationComplete.bind(this), 1000);
+    PanelAnimations.playSuccessAnimation(this, this._animationComplete.bind(this));
   }
 
   _animationComplete() {

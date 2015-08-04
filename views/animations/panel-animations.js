@@ -1,23 +1,4 @@
-const {MoleGameLogic} = require('@anyware/game-logic');
-
-export default class MoleGameAnimations {
-  static playAnimation(animation, view, completeCallback) {
-    const animationFunctions = {
-      [MoleGameLogic.ANIMATION_SUCCESS]: MoleGameAnimations.playSuccessAnimation
-    };
-
-    const animationFunction = animationFunctions[animation];
-    if (animationFunction) {
-      animationFunction(view, completeCallback);
-    }
-    else if (completeCallback) {
-      // Cannot be called in the current execution frame as it may trigger an action and the dispatcher can't handle two of those at once
-      setTimeout(() => {
-        completeCallback();
-      }, 0);
-    }
-  }
-
+export default class PanelAnimations {
   static playSuccessAnimation(view, completeCallback) {
     const frames = [
       ["split", "center", "split"],
@@ -29,7 +10,7 @@ export default class MoleGameAnimations {
       ["split", "center", "split"],
       ["center", "split", "center"],
       ["split", "center", "split"],
-      ["center", "split", "center"],
+      ["center", "split", "center"]
     ];
     
     const playFrame = (frameIndex) => {
@@ -63,3 +44,4 @@ export default class MoleGameAnimations {
     playFrame(0);
   }
 }
+
