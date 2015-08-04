@@ -1,6 +1,6 @@
 const blessed = require('blessed');
 
-const {SculptureStore, MoleGameLogic} = require('@anyware/game-logic');
+const {SculptureStore, MoleGameLogic, DiskGameLogic, SimonGameLogic} = require('@anyware/game-logic');
 
 const VIEW_TITLE = "{center}{bold}Sculpture{/bold}{/center}";
 
@@ -61,7 +61,10 @@ export default class SculptureView extends blessed.Box {
   renderDiskGameProperties() {
     let content = '{yellow-fg}disk:{/yellow-fg} ';
     
-    //TODO: Fill this in
+    const diskGame = this.store.data.get('disk');
+    for (let propName of Object.keys(DiskGameLogic.trackedProperties)) {
+      content += `{yellow-fg}${propName}:{/yellow-fg} ${diskGame.get(propName)}  `;
+    }
 
     return content;
   }
@@ -69,7 +72,10 @@ export default class SculptureView extends blessed.Box {
   renderSimonGameProperties() {
     let content = '{yellow-fg}simon:{/yellow-fg} ';
     
-    //TODO: Fill this in
+    const simonGame = this.store.data.get('simon');
+    for (let propName of Object.keys(SimonGameLogic.trackedProperties)) {
+      content += `{yellow-fg}${propName}:{/yellow-fg} ${simonGame.get(propName)}  `;
+    }
 
     return content;
   }
