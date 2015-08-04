@@ -1,6 +1,6 @@
 const blessed = require('blessed');
 
-const {SculptureStore, MoleGameActionCreator} = require('@anyware/game-logic');
+const {SculptureStore, SculptureActionCreator} = require('@anyware/game-logic');
 
 const MoleGameAnimations = require('./animations/mole-game-animations');
 
@@ -21,7 +21,7 @@ export default class PanelView extends blessed.Box {
     }, windowOptions));
 
     this.store = store;
-    this.moleGameActionCreator = new MoleGameActionCreator(dispatcher);
+    this.sculptureActionCreator = new SculptureActionCreator(dispatcher);
 
     this._animating = false;
 
@@ -41,10 +41,10 @@ export default class PanelView extends blessed.Box {
   }
 
   _handleChanges() {
-    this._playAvailableAnimations()
     if (this._animating) {
       return;
     }
+    this._handleStatusChanges();
 
     this.renderPanels();
   }
@@ -128,25 +128,21 @@ export default class PanelView extends blessed.Box {
     }
   }
 
-  _playAvailableAnimations() {
-    if (this._animating) {
-      return;
-    }
-
-    if (this.store.isPlayingMoleGame) {
-      const animation = this.store.currentGame.data.get("animation");
-      if (animation) {
-        this._animating = true;
-
-        MoleGameAnimations.playAnimation(animation, this, this._moleGameAnimationComplete.bind(this));
-      }
+  _handleStatusChanges() {
+    const status = this.store.data.get('status');
+    if (status === SculptureStore.STATUS_SUCCESS) {
+      this._playSuccessAnimation();
     }
   }
 
-  _moleGameAnimationComplete() {
+  _playSuccessAnimation() {
+    setTimeout(this._animationComplete.bind(this), 1000);
+  }
+
+  _animationComplete() {
     this._animating = false;
+    this.sculptureActionCreator.sendRestoreStatus();
 
     this.renderPanels();
-    this.moleGameActionCreator.sendFinishAnimation();
   }
 }
