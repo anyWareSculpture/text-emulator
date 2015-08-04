@@ -1,19 +1,21 @@
 const blessed = require('blessed');
 
-const {PanelsActionCreator} = require('@anyware/game-logic');
+const {PanelsActionCreator, DisksActionCreator} = require('@anyware/game-logic');
 
-const COMMAND_PANEL = "panel";
-const COMMAND_PRESS = "press";
 const COMMAND_EXIT = "exit";
 const COMMAND_HELP = "help";
 const COMMAND_AUTH = "login";
+const COMMAND_PANEL = "panel";
+const COMMAND_PRESS = "press";
+const COMMAND_DISK = "disk";
 
 const COMMAND_DOCS = {
   [COMMAND_EXIT]: "Quit this program",
   [COMMAND_HELP]: "Show this help information",
   [COMMAND_AUTH]: "Login using a provided username and password",
   [COMMAND_PANEL]: "Activate or deactivate a specified panel",
-  [COMMAND_PRESS]: "Press a panel for the given number of milliseconds"
+  [COMMAND_PRESS]: "Press a panel for the given number of milliseconds",
+  [COMMAND_DISK]: "Set one or more disk positions"
 };
 
 export default class CommandInput extends blessed.Form {
@@ -35,6 +37,7 @@ export default class CommandInput extends blessed.Form {
     }, options));
 
     this.panelsActionCreator = new PanelsActionCreator(dispatcher);
+    this.disksActionCreator = new DisksActionCreator(dispatcher);
     this.history = [];
     this.historyIndex = this.history.length;
 
@@ -122,27 +125,27 @@ export default class CommandInput extends blessed.Form {
 
   _handleCommand(command) {
     const [commandName, ...commandArgs] = command.toLowerCase().split(/\s+/);
-    
-    switch (commandName) {
-      case COMMAND_EXIT:
-        this.emit(CommandInput.EVENT_QUIT);
-        break;
-      case COMMAND_PANEL:
-        this._commandPanel(commandArgs);
-        break;
-      case COMMAND_PRESS:
-        this._commandPress(commandArgs);
-        break;
-      case COMMAND_AUTH:
-        this._commandAuthenticate(commandArgs);
-        break;
-      case COMMAND_HELP:
-        this._commandHelp(commandArgs);
-        break;
-      default:
-        this._error(`Unrecognized command: ${command}`);
-        break;
+
+    const commandHandlers = {
+      [COMMAND_EXIT]: this._commandExit.bind(this),
+      [COMMAND_HELP]: this._commandHelp.bind(this),
+      [COMMAND_AUTH]: this._commandAuthenticate.bind(this),
+      [COMMAND_PANEL]: this._commandPanel.bind(this),
+      [COMMAND_PRESS]: this._commandPress.bind(this),
+      [COMMAND_DISK]: this._commandDisk.bind(this)
     }
+
+    const commandHandler = commandHandlers[commandName];
+    if (!commandHandler) {
+        this._error(`Unrecognized command: ${command}`);
+        return;
+    }
+
+    commandHandler(commandArgs);
+  }
+
+  _commandExit(args) {
+    this.emit(CommandInput.EVENT_QUIT);
   }
 
   _commandPanel(args) {
@@ -196,6 +199,29 @@ export default class CommandInput extends blessed.Form {
       const commandDescription = COMMAND_DOCS[commandName];
 
       this._output(`${commandName}\t${commandDescription}`);
+    }
+  }
+
+  _commandDisk(args) {
+    if (args.length % 2 !== 0) {
+      this._error('Usage: diskId position [diskId position] ...');
+      return;
+    }
+
+    let diskId = null;
+    for (let arg of args) {
+      if (diskId === null) {
+        if (!arg.startsWith("disk")) {
+          arg = "disk" + arg;
+        }
+        diskId = arg;
+      }
+      else {
+        this.disksActionCreator.sendDiskUpdate(diskId, {
+          position: parseInt(arg)
+        });
+        diskId = null;
+      }
     }
   }
 }
