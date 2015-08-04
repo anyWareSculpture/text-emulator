@@ -40,11 +40,11 @@ export default class PanelView extends blessed.Box {
     this.setBodyContent(content);
   }
 
-  _handleChanges() {
+  _handleChanges(changes) {
     if (this._animating) {
       return;
     }
-    this._handleStatusChanges();
+    this._handleStatusChanges(changes);
 
     this.renderPanels();
   }
@@ -128,8 +128,8 @@ export default class PanelView extends blessed.Box {
     }
   }
 
-  _handleStatusChanges() {
-    const status = this.store.data.get('status');
+  _handleStatusChanges(changes) {
+    const status = changes.status;
     if (status === SculptureStore.STATUS_SUCCESS) {
       this._playSuccessAnimation();
     }
