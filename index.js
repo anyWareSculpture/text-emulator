@@ -1,3 +1,5 @@
+require('source-map-support').install();
+
 let app;
 process.on('uncaughtException', function(err) {
   const currentDate = new Date();
