@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "babel-node --stage 0 index.js $CREDENTIALS"
+    "start": "babel-node --debug -- index.js $CREDENTIALS"
   },
   "repository": {
     "type": "git",
