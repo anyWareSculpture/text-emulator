@@ -141,7 +141,7 @@ export default class PanelView extends blessed.Box {
 
   _animationComplete() {
     this._animating = false;
-    this.sculptureActionCreator.sendRestoreStatus();
+    this.sculptureActionCreator.sendFinishStatusAnimation();
 
     this.renderPanels();
   }
