@@ -2,6 +2,8 @@ const blessed = require('blessed');
 
 const {Dispatcher} = require('flux');
 
+const config = require('./config');
+
 const OutputWindow = require('./output-window');
 const SculptureView = require('./views/sculpture-view');
 const PanelView = require('./views/panel-view');
@@ -15,6 +17,8 @@ const {SculptureStore, SculptureActionCreator} = require('@anyware/game-logic');
 export default class EmulatorApp {
   constructor() {
     this.screen = this._createApplicationScreen();
+
+    this.config = config;
 
     this.sculptureView = null;
     this.panelView = null;
@@ -30,7 +34,7 @@ export default class EmulatorApp {
       this.outputConsole.log(`Sent action: ${JSON.stringify(payload)}`);
     });
 
-    this.sculpture = new SculptureStore(this.dispatcher);
+    this.sculpture = new SculptureStore(this.dispatcher, this.config);
     this.sculpture.on(SculptureStore.EVENT_CHANGE, (changes) => {
       this.outputConsole.log(`Sent state update: ${JSON.stringify(changes)}`);
 
