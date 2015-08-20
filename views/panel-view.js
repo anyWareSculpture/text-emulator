@@ -118,14 +118,14 @@ export default class PanelView extends blessed.Box {
   }
 
   _colorFromKeyword(keyword) {
-    switch (keyword) {
-      case "success":
-        return "green";
-      case "error":
-        return "red";
-      default:
-        return;
-    }
+    const keywordColors = {
+      success: "green",
+      error: "red",
+      user0: "blue",
+      user1: "yellow",
+      user2: "pink"
+    };
+    return keywordColors[keyword] || keyword;
   }
 
   _handleStatusChanges(changes) {
@@ -141,7 +141,7 @@ export default class PanelView extends blessed.Box {
 
   _animationComplete() {
     this._animating = false;
-    this.sculptureActionCreator.sendRestoreStatus();
+    this.sculptureActionCreator.sendFinishStatusAnimation();
 
     this.renderPanels();
   }
