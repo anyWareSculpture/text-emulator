@@ -188,10 +188,10 @@ export default class EmulatorApp {
     this.client.on(StreamingClient.EVENT_ERROR, this._error.bind(this));
 
     this.client.once(StreamingClient.EVENT_CONNECT, () => {
-      // Temporarily here until the full game transitions are implemented
+      //TODO: Temporarily here until the full game transitions are implemented
       if (!this.sculpture.isPlayingMoleGame) {
-        this._log("Starting simon game...");
-        this.sculptureActionCreator.sendStartSimonGame();
+        this._log("Starting mole game...");
+        this.sculptureActionCreator.sendStartMoleGame();
       }
     });
 
