@@ -12,12 +12,28 @@ export default class PanelAnimations {
       ["split", "center", "split"],
       ["center", "split", "center"]
     ];
+
+    PanelAnimations.playAnimation("{green-fg}{bold}SUCCESS!!{/bold}{/green-fg}", frames, view, completeCallback);
+  }
+
+  static playFailureAnimation(view, completeCallback) {
+    const frames = [
+      ["split", "split", "split"],
+      ["center", "center", "center"],
+      ["split", "center", "split"],
+      ["center", "split", "center"],
+      ["center", "center", "center"],
+      ["split", "split", "split"],
+    ];
+
+    PanelAnimations.playAnimation("{red-fg}{bold}FAILURE!!{/bold}{/red-fg}", frames, view, completeCallback);
+  }
     
+  static playAnimation(word, frames, view, completeCallback) {
     const playFrame = (frameIndex) => {
       const lines = [];
       const lineFormats = frames[frameIndex];
       
-      const word = "{green-fg}{bold}SUCCESS!!{/bold}{/green-fg}";
       for (let lineFormat of lineFormats) {
         let line;
         if (lineFormat === "split") {
@@ -41,7 +57,7 @@ export default class PanelAnimations {
       }
       setTimeout(nextFunction, 500);
     };
-    playFrame(0);
+    setTimeout(() => playFrame(0), 500);
   }
 }
 
