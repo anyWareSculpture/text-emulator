@@ -130,13 +130,24 @@ export default class PanelView extends blessed.Box {
 
   _handleStatusChanges(changes) {
     const status = changes.status;
-    if (status === SculptureStore.STATUS_SUCCESS) {
-      this._playSuccessAnimation();
+
+    const statusHandlers = {
+      [SculptureStore.STATUS_SUCCESS]: this._playSuccessAnimation.bind(this),
+      [SculptureStore.STATUS_FAILURE]: this._playFailureAnimation.bind(this)
+    }
+
+    const handler = statusHandlers[status];
+    if (handler) {
+      handler();
     }
   }
 
   _playSuccessAnimation() {
     PanelAnimations.playSuccessAnimation(this, this._animationComplete.bind(this));
+  }
+
+  _playFailureAnimation() {
+    PanelAnimations.playFailureAnimation(this, this._animationComplete.bind(this));
   }
 
   _animationComplete() {

@@ -85,7 +85,7 @@ export default class EmulatorApp {
       autoPadding: true,
       smartCSR: true,
       debug: true,
-      ignoreLocked: ['C-c']
+      ignoreLocked: ['C-c', 'f12']
     });
     screen.key(['C-c'], this.quit.bind(this));
 
@@ -189,9 +189,9 @@ export default class EmulatorApp {
 
     this.client.once(StreamingClient.EVENT_CONNECT, () => {
       //TODO: Temporarily here until the full game transitions are implemented
-      if (!this.sculpture.isPlayingMoleGame) {
-        this._log("Starting mole game...");
-        this.sculptureActionCreator.sendStartMoleGame();
+      if (!this.sculpture.isPlayingSimonGame) {
+        this._log("Starting simon game...");
+        this.sculptureActionCreator.sendStartSimonGame();
       }
     });
 
