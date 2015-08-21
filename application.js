@@ -85,7 +85,7 @@ export default class EmulatorApp {
       autoPadding: true,
       smartCSR: true,
       debug: true,
-      ignoreLocked: ['C-c']
+      ignoreLocked: ['C-c', 'f12']
     });
     screen.key(['C-c'], this.quit.bind(this));
 
