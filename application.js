@@ -164,7 +164,7 @@ export default class EmulatorApp {
   }
 
   _setupOutputConsole() {
-    this.outputConsole = new OutputWindow({
+    this.outputConsole = new OutputWindow("output.log", {
       parent: this.screen,
       top: 0,
       left: '50%',

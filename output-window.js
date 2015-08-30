@@ -1,12 +1,14 @@
+const fs = require('fs');
+
 const blessed = require('blessed');
 
 const WELCOME_MESSAGE = (
   "Welcome!\n" +
-  "Press Ctrl + C or type 'exit' to exit.\n"
+  "Press Ctrl + C or type 'exit' and hit enter to exit.\n"
 );
 
 export default class OutputWindow extends blessed.Box {
-  constructor(windowOptions) {
+  constructor(logFilePath, windowOptions) {
     super(windowOptions);
 
     blessed.box({
@@ -27,6 +29,7 @@ export default class OutputWindow extends blessed.Box {
         }
       }
     });
+    this._logFile = fs.openSync(logFilePath, 'w');
 
     this._outputWindow = blessed.log({
       parent: this,
@@ -75,6 +78,7 @@ export default class OutputWindow extends blessed.Box {
   _outputLines(lines, formatter) {
     for (let line of lines.split('\n')) {
       this._outputWindow.log(formatter(line));
+      fs.write(this._logFile, line + '\n');
     }
   }
 }
