@@ -59,14 +59,11 @@ export default class OutputWindow extends blessed.Box {
   }
   
   log(message) {
-    const timeString = this._logTime();
-
-    this._outputLines(message, (line) => `{blue-fg}{bold}${timeString}{/} ${line}`);
+    this._outputLines(message, (line, timeString) => `{blue-fg}{bold}${timeString}{/} ${line}`);
   }
 
   error(message) {
-    const timeString = this._logTime();
-    this._outputLines(message, (line) => `{red-fg}{bold}${timeString} ERROR:{/} ${line}`);
+    this._outputLines(message, (line, timeString) => `{red-fg}{bold}${timeString} ERROR:{/} ${line}`);
   }
 
   _logTime() {
@@ -76,9 +73,11 @@ export default class OutputWindow extends blessed.Box {
   }
 
   _outputLines(lines, formatter) {
+    const timeString = this._logTime();
+
     for (let line of lines.split('\n')) {
-      this._outputWindow.log(formatter(line));
-      fs.write(this._logFile, line + '\n');
+      this._outputWindow.log(formatter(line, timeString));
+      fs.write(this._logFile, `${timeString} ${line}\n`);
     }
   }
 }
