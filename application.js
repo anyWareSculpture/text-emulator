@@ -11,6 +11,8 @@ const DiskView = require('./views/disk-view');
 
 const CommandInput = require('./command-input');
 
+const StateUpdateFilter = require('./state-update-filter');
+
 const StreamingClient = require('@anyware/streaming-client');
 const {SculptureStore, SculptureActionCreator} = require('@anyware/game-logic');
 
@@ -28,6 +30,7 @@ export default class EmulatorApp {
 
     this.client = null;
     this._connectionOptions = {};
+    this.stateUpdateFilter = new StateUpdateFilter();
 
     this.dispatcher = new Dispatcher();
     this.dispatcher.register((payload) => {
@@ -38,7 +41,8 @@ export default class EmulatorApp {
     this.sculpture.on(SculptureStore.EVENT_CHANGE, (changes) => {
       this.outputConsole.log(`Sent state update: ${JSON.stringify(changes)}`);
 
-      this.client.sendStateUpdate(changes);
+      const {update, metadata} = this.stateUpdateFilter.processOutgoingStateUpdate(changes, {});
+      this.client.sendStateUpdate(update, metadata);
     });
     this.sculptureActionCreator = new SculptureActionCreator(this.dispatcher);
 
@@ -204,6 +208,13 @@ export default class EmulatorApp {
   }
 
   _onStateUpdate(update, metadata) {
+    ({update, metadata} = this.stateUpdateFilter.processIncomingStateUpdate(update, metadata));
+    if (!Object.keys(update).length) {
+      this._log('Ignored all changes from received update');
+
+      this.stateUpdateFilter.clearStagedUpdate();
+      return;
+    }
     update.metadata = metadata;
 
     this._log(`Got state update: ${JSON.stringify(update)}`);
