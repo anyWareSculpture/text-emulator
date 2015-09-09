@@ -34,14 +34,15 @@ export default class EmulatorApp {
 
     this.dispatcher = new Dispatcher();
     this.dispatcher.register((payload) => {
-      this.outputConsole.log(`Sent action: ${JSON.stringify(payload)}`);
+      this._log(`Sent action: ${JSON.stringify(payload)}`);
     });
 
     this.sculpture = new SculptureStore(this.dispatcher, this.config);
     this.sculpture.on(SculptureStore.EVENT_CHANGE, (changes) => {
-      this.outputConsole.log(`Sent state update: ${JSON.stringify(changes)}`);
+      this._log(`Sent state update: ${JSON.stringify(changes)}`);
 
-      const {update, metadata} = this.stateUpdateFilter.processOutgoingStateUpdate(changes, {});
+      const baseMetadata = {timestamp: Date.now()};
+      const {update, metadata} = this.stateUpdateFilter.processOutgoingStateUpdate(changes, baseMetadata);
       this.client.sendStateUpdate(update, metadata);
     });
     this.sculptureActionCreator = new SculptureActionCreator(this.dispatcher);
@@ -68,6 +69,10 @@ export default class EmulatorApp {
     this.screen.render();
   }
 
+  get _username() {
+    return this._connectionOptions.username;
+  }
+
   _log(message) {
     this.outputConsole.log(message);
   }
@@ -75,7 +80,7 @@ export default class EmulatorApp {
   _error(error) {
     let errorMessage;
     try {
-      errorMessage = error.stack;
+      errorMessage = error.stack || error.toString();
     }
     catch (stackError) {
       errorMessage = error.toString();
@@ -148,11 +153,11 @@ export default class EmulatorApp {
     this.commandInput.focusInput();
 
     this.commandInput.on(CommandInput.EVENT_OUTPUT, (text) => {
-      this.outputConsole.log(text);
+      this._log(text);
     });
 
     this.commandInput.on(CommandInput.EVENT_ERROR, (text) => {
-      this.outputConsole.error(text);
+      this._error(text);
     });
 
     this.commandInput.on(CommandInput.EVENT_AUTH, (username, password) => {
@@ -168,7 +173,13 @@ export default class EmulatorApp {
   }
 
   _setupOutputConsole() {
-    this.outputConsole = new OutputWindow("output.log", {
+    this.outputConsole = new OutputWindow(() => {
+      let log = "output.log";
+      if (this._username) {
+        log = `${this._username}-${log}`;
+      }
+      return log;
+    }, {
       parent: this.screen,
       top: 0,
       left: '50%',
@@ -182,7 +193,7 @@ export default class EmulatorApp {
       this.client.close();
     }
 
-    this._log(`Using username ${this._connectionOptions.username}`);
+    this._log(`Using username ${this._username}`);
 
     this.client = new StreamingClient(this._connectionOptions);
 
@@ -208,9 +219,14 @@ export default class EmulatorApp {
   }
 
   _onStateUpdate(update, metadata) {
+    if (metadata.from === this._username) {
+      this._log(`Got state update from self (ignored): ${JSON.stringify(update)}`);
+      return;
+    }
+
     ({update, metadata} = this.stateUpdateFilter.processIncomingStateUpdate(update, metadata));
     if (!Object.keys(update).length) {
-      this._log('Ignored all changes from received update');
+      this._log('Ignored all changes from received update since they were stale');
 
       this.stateUpdateFilter.clearStagedUpdate();
       return;

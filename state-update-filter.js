@@ -13,40 +13,39 @@ export default class StateUpdateFilter {
   processIncomingStateUpdate(update, metadata) {
     const updateTimestamp = metadata.originalTimestamp || metadata.timestamp;
 
+    const filteredUpdate = {};
     for (let name of StateUpdateFilter.walkValueFieldNames(update)) {
       const fieldTimestamp = this.fieldTimestamps[name];
-      // If the field is more or just as up to date than this update
-      if (fieldTimestamp >= updateTimestamp) {
-        StateUpdateFilter.removeField(update, name);
+      // If the update is more recent than the recorded timestamp
+      if (!fieldTimestamp || updateTimestamp > fieldTimestamp ) {
+        StateUpdateFilter.copyField(update, filteredUpdate, name);
       }
     }
 
-    this.stageUpdate(update, metadata);
-    return {update: update, metadata: metadata};
+    this.stageUpdate(filteredUpdate, metadata);
+    return {update: filteredUpdate, metadata: metadata};
   }
 
   /**
-   * Records that the updated fields have changed or if there is a staged state update, modifies metadata to specify that this is in response to that
+   * Records that the updated fields have changed
+   * If there is a staged state update, modifies metadata to specify that this is in response to that
    * Clears any update that was previously staged since staged updates are only good for a single outgoing state update
    * @returns {Object} - {update: processed update, metadata: processed metadata}
    */
   processOutgoingStateUpdate(update, metadata) {
-    if (this.stagedUpdate) {
-      console.log(update);
-      console.log(this.stagedUpdate.update);
-    }
+    let changeTimestamp = metadata.timestamp || Date.now();
     if (this.stagedUpdate && StateUpdateFilter.objectsEqual(update, this.stagedUpdate.update)) {
-      metadata.originalTimestamp = this.stagedUpdate.metadata.timestamp;
-      console.log('added original timestamp');
+
+      changeTimestamp = this.stagedUpdate.metadata.timestamp;
+      metadata.originalTimestamp = changeTimestamp;
 
       this.clearStagedUpdate();
     }
-    else {
-      const currentTimestamp = Date.now();
-      for (let name of StateUpdateFilter.walkValueFieldNames(update)) {
-        this.fieldTimestamps[name] = currentTimestamp;
-      }
+
+    for (let name of StateUpdateFilter.walkValueFieldNames(update)) {
+      this.fieldTimestamps[name] = changeTimestamp;
     }
+
     return {update: update, metadata: metadata};
   }
 
@@ -55,6 +54,9 @@ export default class StateUpdateFilter {
    * update will be processed in the context of this one
    */
   stageUpdate(update, metadata) {
+    // Clone the objects
+    update = JSON.parse(JSON.stringify(update));
+    metadata = JSON.parse(JSON.stringify(metadata));
     this.stagedUpdate = {update: update, metadata: metadata};
   }
 
@@ -83,8 +85,8 @@ export default class StateUpdateFilter {
     for (let name of Object.keys(object)) {
       const value = object[name];
       if (typeof value === 'object' && value.constructor === Object) {
-        for (let childName of StateUpdateFilter.walkValueFields(value)) {
-          yield [`${name}.${childName}`, value];
+        for (let [childName, childValue] of StateUpdateFilter.walkValueFields(value)) {
+          yield [`${name}.${childName}`, childValue];
         }
       }
       else {
@@ -118,17 +120,23 @@ export default class StateUpdateFilter {
   }
 
   /**
-   * Removes the given field name from the object
-   * @param {Object} object - the object to modify
-   * @param {String} fullFieldName - the dot-delimited field name - each dot represents another layer of depth into the object (i.e. a.b.c => a["b"]["c"])
+   * Copies a dot-delimited name from source to destination
    */
-  static removeField(object, fullFieldName) {
-    const parentNames = fullFieldName.split(".");
+  static copyField(source, destination, name) {
+    const parentNames = name.split(".");
     const fieldName = parentNames.pop();
-    let parent = object;
-    for (let name of parentNames) {
-      parent = parent[name];
+    let sourceParent = source;
+    let destinationParent = destination;
+    for (let parentName of parentNames) {
+      if (!sourceParent.hasOwnProperty(parentName)) {
+        return;
+      }
+      sourceParent = sourceParent[parentName];
+      if (!destinationParent.hasOwnProperty(parentName)) {
+        destinationParent[parentName] = {};
+      }
+      destinationParent = destinationParent[parentName];
     }
-    delete parent[fieldName];
+    destinationParent[fieldName] = sourceParent[fieldName];
   }
 }

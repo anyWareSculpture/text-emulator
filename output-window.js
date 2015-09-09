@@ -8,7 +8,7 @@ const WELCOME_MESSAGE = (
 );
 
 export default class OutputWindow extends blessed.Box {
-  constructor(logFilePath, windowOptions) {
+  constructor(logFilePathMethod, windowOptions) {
     super(windowOptions);
 
     blessed.box({
@@ -29,7 +29,7 @@ export default class OutputWindow extends blessed.Box {
         }
       }
     });
-    this._logFile = fs.openSync(logFilePath, 'w');
+    this._logFilePathMethod = logFilePathMethod;
 
     this._outputWindow = blessed.log({
       parent: this,
@@ -75,9 +75,10 @@ export default class OutputWindow extends blessed.Box {
   _outputLines(lines, formatter) {
     const timeString = this._logTime();
 
+    const logFile = this._logFilePathMethod();
     for (let line of lines.split('\n')) {
       this._outputWindow.log(formatter(line, timeString));
-      fs.write(this._logFile, `${timeString} ${line}\n`);
+      fs.appendFileSync(logFile, `${timeString} ${line}\n`);
     }
   }
 }
