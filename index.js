@@ -1,5 +1,8 @@
 require('source-map-support').install();
 
+const Config = require('./config');
+const EmulatorApp = require('./application');
+
 let app;
 process.on('uncaughtException', function(err) {
   const currentDate = new Date();
@@ -21,9 +24,6 @@ process.on('uncaughtException', function(err) {
     app._error(err);
   }
 });
-
-const Config = require('./config');
-const EmulatorApp = require('./application');
 
 const DEFAULT_CLIENT_CONNECTION_OPTIONS = {
   username: "anyware",
