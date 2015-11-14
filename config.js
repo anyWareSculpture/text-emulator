@@ -6,12 +6,6 @@ export default class Config extends DefaultConfig {
     super();
 
     this.username = "sculpture0";
-
-    this.GAMES_SEQUENCE = [
-      GAMES.MOLE,
-      GAMES.DISK,
-      GAMES.SIMON
-    ];
   }
 }
 
