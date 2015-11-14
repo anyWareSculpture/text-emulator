@@ -2,8 +2,6 @@ const blessed = require('blessed');
 
 const {Dispatcher} = require('flux');
 
-const config = require('./config');
-
 const OutputWindow = require('./output-window');
 const SculptureView = require('./views/sculpture-view');
 const PanelView = require('./views/panel-view');
@@ -19,7 +17,7 @@ const SculptureStore = require('@anyware/game-logic/lib/sculpture-store');
 const SculptureActionCreator = require('@anyware/game-logic/lib/actions/sculpture-action-creator');
 
 export default class EmulatorApp {
-  constructor() {
+  constructor(config) {
     this.screen = this._createApplicationScreen();
 
     this.config = config;
