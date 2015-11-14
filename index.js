@@ -22,8 +22,7 @@ process.on('uncaughtException', function(err) {
   }
 });
 
-const config = require('./config');
-
+const Config = require('./config');
 const EmulatorApp = require('./application');
 
 const DEFAULT_CLIENT_CONNECTION_OPTIONS = {
@@ -32,6 +31,7 @@ const DEFAULT_CLIENT_CONNECTION_OPTIONS = {
   host: "connect.shiftr.io"
 };
 
+const config = new Config();
 app = new EmulatorApp(config);
 
 const connectionOptions = Object.assign({}, DEFAULT_CLIENT_CONNECTION_OPTIONS);

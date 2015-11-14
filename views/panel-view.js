@@ -1,6 +1,7 @@
 const blessed = require('blessed');
 
-const {SculptureStore, SculptureActionCreator} = require('@anyware/game-logic');
+const SculptureStore = require('@anyware/game-logic/lib/sculpture-store');
+const SculptureActionCreator = require('@anyware/game-logic/lib/actions/sculpture-action-creator');
 
 const PanelAnimations = require('./animations/panel-animations');
 

@@ -14,7 +14,9 @@ const CommandInput = require('./command-input');
 const StateUpdateFilter = require('./state-update-filter');
 
 const StreamingClient = require('@anyware/streaming-client');
-const {SculptureStore, SculptureActionCreator} = require('@anyware/game-logic');
+
+const SculptureStore = require('@anyware/game-logic/lib/sculpture-store');
+const SculptureActionCreator = require('@anyware/game-logic/lib/actions/sculpture-action-creator');
 
 export default class EmulatorApp {
   constructor() {
