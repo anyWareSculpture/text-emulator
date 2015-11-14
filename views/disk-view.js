@@ -1,8 +1,8 @@
 const blessed = require('blessed');
 
 const SculptureStore = require('@anyware/game-logic/lib/sculpture-store');
-const DisksActionCreator = require('@anyware/game-logic/actions/disks-action-creator');
-const Disk = require('@anyware/game-logic/utils/disk');
+const DisksActionCreator = require('@anyware/game-logic/lib/actions/disks-action-creator');
+const Disk = require('@anyware/game-logic/lib/utils/disk');
 
 const VIEW_TITLE = "{center}{bold}Disks{/bold}{/center}";
 const CELL_WIDTH = 3;

@@ -1,7 +1,7 @@
 const blessed = require('blessed');
 
-const DisksActionCreator = require('@anyware/game-logic/actions/disks-action-creator');
-const PanelsActionCreator = require('@anyware/game-logic/actions/panels-action-creator');
+const DisksActionCreator = require('@anyware/game-logic/lib/actions/disks-action-creator');
+const PanelsActionCreator = require('@anyware/game-logic/lib/actions/panels-action-creator');
 
 
 const COMMAND_EXIT = "exit";
