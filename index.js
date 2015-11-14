@@ -25,16 +25,10 @@ process.on('uncaughtException', function(err) {
   }
 });
 
-const DEFAULT_CLIENT_CONNECTION_OPTIONS = {
-  username: "anyware",
-  password: "anyware",
-  host: "connect.shiftr.io"
-};
-
 const config = new Config();
 app = new EmulatorApp(config);
 
-const connectionOptions = Object.assign({}, DEFAULT_CLIENT_CONNECTION_OPTIONS);
+const connectionOptions = Object.assign({}, config.CLIENT_CONNECTION_OPTIONS.default);
 if (process.argv.length === 4) {
   console.log("Using authentication information provided by command arguments");
   connectionOptions.username = process.argv[2];

@@ -113,7 +113,7 @@ export default class EmulatorApp {
     let totalHeight = 0;
 
     const sculptureViewHeight = 5;
-    this.sculptureView = new SculptureView(this.sculpture, {
+    this.sculptureView = new SculptureView(this.sculpture, this.config, {
       parent: this.screen,
       top: 0,
       left: 0,
@@ -123,7 +123,7 @@ export default class EmulatorApp {
     totalHeight += sculptureViewHeight;
 
     const panelViewHeight = 7;
-    this.panelView = new PanelView(this.sculpture, this.dispatcher, {
+    this.panelView = new PanelView(this.sculpture, this.config, this.dispatcher, {
       parent: this.screen,
       top: totalHeight,
       left: 0,
@@ -133,7 +133,7 @@ export default class EmulatorApp {
     totalHeight += panelViewHeight;
 
     const diskViewHeight = 6;
-    this.diskView = new DiskView(this.sculpture, this.dispatcher, {
+    this.diskView = new DiskView(this.sculpture, this.config, this.dispatcher, {
       parent: this.screen,
       top: totalHeight,
       left: 0,

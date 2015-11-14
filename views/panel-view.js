@@ -9,7 +9,7 @@ const VIEW_TITLE = "{center}{bold}Panels{/bold}{/center}";
 const CELL_WIDTH = 3;
 
 export default class PanelView extends blessed.Box {
-  constructor(store, dispatcher, windowOptions) {
+  constructor(store, config, dispatcher, windowOptions) {
     super(Object.assign({
       tags: true,
       border: {
@@ -22,6 +22,8 @@ export default class PanelView extends blessed.Box {
     }, windowOptions));
 
     this.store = store;
+    this.config = config;
+
     this.sculptureActionCreator = new SculptureActionCreator(dispatcher);
 
     this._animating = false;

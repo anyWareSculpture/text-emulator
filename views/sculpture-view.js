@@ -8,7 +8,7 @@ const SimonGameLogic = require('@anyware/game-logic/lib/logic/simon-game-logic')
 const VIEW_TITLE = "{center}{bold}Sculpture{/bold}{/center}";
 
 export default class SculptureView extends blessed.Box {
-  constructor(store, windowOptions) {
+  constructor(store, config, windowOptions) {
     super(Object.assign({
       tags: true,
       border: {
@@ -21,6 +21,7 @@ export default class SculptureView extends blessed.Box {
     }, windowOptions));
 
     this.store = store;
+    this.config = config;
     this.renderSculptureProperties();
 
     this.store.on(SculptureStore.EVENT_CHANGE, this.renderSculptureProperties.bind(this));
