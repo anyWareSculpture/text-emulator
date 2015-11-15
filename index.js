@@ -4,7 +4,10 @@ const Config = require('./config');
 const EmulatorApp = require('./application');
 
 let app;
+let errorsOccurred = false;
 process.on('uncaughtException', function(err) {
+  errorsOccurred = true;
+
   const currentDate = new Date();
   const currentDay = currentDate.toDateString();
   const currentTime = currentDate.toTimeString();
@@ -22,6 +25,12 @@ process.on('uncaughtException', function(err) {
   if (app) {
     // Not a best practice
     app._error(err);
+  }
+});
+
+process.on('exit', function() {
+  if (errorsOccurred) {
+    console.error("There were errors. See error.log for more information");
   }
 });
 
