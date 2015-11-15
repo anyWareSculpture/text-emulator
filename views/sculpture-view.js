@@ -65,7 +65,10 @@ export default class SculptureView extends blessed.Box {
   }
 
   renderCurrentGameProperties() {
-    if (this.store.isPlayingMoleGame) {
+    if (this.store.isPlayingHandshakeGame) {
+      return this.renderHandshakeGameProperties();
+    }
+    else if (this.store.isPlayingMoleGame) {
       return this.renderMoleGameProperties();
     }
     else if (this.store.isPlayingDiskGame) {
@@ -77,6 +80,11 @@ export default class SculptureView extends blessed.Box {
     else {
       return 'No game currently being played';
     }
+  }
+
+  renderHandshakeGameProperties() {
+    let content = '{yellow-fg}handshake:{/yellow-fg} (nothing for the handshake game)';
+    return content;
   }
 
   renderMoleGameProperties() {

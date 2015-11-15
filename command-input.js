@@ -227,6 +227,7 @@ export default class CommandInput extends blessed.Form {
   _commandHandshake(args) {
     if (args.length !== 2) {
       this._error('Usage: handshake username active?');
+      return;
     }
 
     let [username, active] = args;
