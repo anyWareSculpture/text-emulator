@@ -247,7 +247,7 @@ export default class CommandInput extends blessed.Form {
       "on": true,
       "1": true,
       "false": false,
-      "off": true,
+      "off": false,
       "0": false
     }[value];
   }
