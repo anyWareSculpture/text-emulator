@@ -31,9 +31,37 @@ export default class SculptureView extends blessed.Box {
     let content = VIEW_TITLE + '\n';
     content += `{yellow-fg}status:{/yellow-fg} ${this.store.data.get('status')}\n`;
 
+    content += this.renderHandshakes();
     content += this.renderCurrentGameProperties();
 
     this.setContent(content);
+  }
+
+  renderHandshakes() {
+    const handshakes = this.store.data.get("handshakes");
+
+    var rendered = [];
+    for (let username of handshakes) {
+      const value = handshakes.get(username);
+      if (!value) {
+        continue;
+      }
+
+      let renderContent = `{yellow-fg}${username}:{/yellow-fg} `;
+      renderContent += `{bold}{green-fg}${value}{/green-fg}{/bold}`;
+
+      rendered.push(renderContent);
+    }
+
+    let content = "{yellow-fg}handshakes:{/yellow-fg}\n";
+    if (rendered.length) {
+      content += rendered.join(", ");
+    }
+    else {
+      content += "nothing yet."
+    }
+
+    return content + '\n';
   }
 
   renderCurrentGameProperties() {

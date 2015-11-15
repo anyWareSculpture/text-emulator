@@ -112,7 +112,7 @@ export default class EmulatorApp {
   _setupViews() {
     let totalHeight = 0;
 
-    const sculptureViewHeight = 5;
+    const sculptureViewHeight = 7;
     this.sculptureView = new SculptureView(this.sculpture, this.config, {
       parent: this.screen,
       top: 0,

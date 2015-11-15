@@ -123,12 +123,9 @@ export default class PanelView extends blessed.Box {
   _colorFromKeyword(keyword) {
     const keywordColors = {
       success: "green",
-      error: "red",
-      user0: "blue",
-      user1: "yellow",
-      user2: "pink"
+      error: "red"
     };
-    return keywordColors[keyword] || keyword;
+    return keywordColors[keyword] || this.config.getUserColorName(keyword) || keyword;
   }
 
   _handleStatusChanges(changes) {

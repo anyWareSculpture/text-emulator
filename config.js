@@ -19,5 +19,14 @@ export default class Config extends DefaultConfig {
       MAX_POSITION: 30 // number to loop back to zero on
     };
   }
+
+  getUserColorName(username) {
+    var colors = {
+      user0: "blue",
+      user1: "yellow",
+      user2: "pink"
+    };
+    return colors[this.getUserColor(username)];
+  }
 }
 
