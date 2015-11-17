@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/anyWareSculpture/text-emulator",
   "dependencies": {
-    "@anyware/game-logic": "^10.0.3",
+    "@anyware/game-logic": "^11.1.0",
     "@anyware/streaming-client": "^2.0.0",
     "babel": "^5.4.7",
     "blessed": "https://github.com/chjj/blessed.git",

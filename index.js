@@ -40,6 +40,7 @@ app = new EmulatorApp(config);
 const connectionOptions = Object.assign({}, config.CLIENT_CONNECTION_OPTIONS.default);
 if (process.argv.length === 4) {
   console.log("Using authentication information provided by command arguments");
+  config.username = process.argv[2];
   connectionOptions.username = process.argv[2];
   connectionOptions.password = process.argv[3];
 }

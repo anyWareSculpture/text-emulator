@@ -31,13 +31,44 @@ export default class SculptureView extends blessed.Box {
     let content = VIEW_TITLE + '\n';
     content += `{yellow-fg}status:{/yellow-fg} ${this.store.data.get('status')}\n`;
 
+    content += this.renderHandshakes();
     content += this.renderCurrentGameProperties();
 
     this.setContent(content);
   }
 
+  renderHandshakes() {
+    const handshakes = this.store.data.get("handshakes");
+
+    var rendered = [];
+    for (let username of handshakes) {
+      const value = handshakes.get(username);
+      if (!value) {
+        continue;
+      }
+
+      let renderContent = `{yellow-fg}${username}:{/yellow-fg} `;
+      renderContent += `{bold}{green-fg}${value}{/green-fg}{/bold}`;
+
+      rendered.push(renderContent);
+    }
+
+    let content = "{yellow-fg}handshakes:{/yellow-fg}\n";
+    if (rendered.length) {
+      content += rendered.join(", ");
+    }
+    else {
+      content += "nothing yet."
+    }
+
+    return content + '\n';
+  }
+
   renderCurrentGameProperties() {
-    if (this.store.isPlayingMoleGame) {
+    if (this.store.isPlayingHandshakeGame) {
+      return this.renderHandshakeGameProperties();
+    }
+    else if (this.store.isPlayingMoleGame) {
       return this.renderMoleGameProperties();
     }
     else if (this.store.isPlayingDiskGame) {
@@ -49,6 +80,11 @@ export default class SculptureView extends blessed.Box {
     else {
       return 'No game currently being played';
     }
+  }
+
+  renderHandshakeGameProperties() {
+    let content = '{yellow-fg}handshake:{/yellow-fg} (nothing for the handshake game)';
+    return content;
   }
 
   renderMoleGameProperties() {
