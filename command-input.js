@@ -4,6 +4,7 @@ const SculptureActionCreator = require('@anyware/game-logic/lib/actions/sculptur
 const DisksActionCreator = require('@anyware/game-logic/lib/actions/disks-action-creator');
 const PanelsActionCreator = require('@anyware/game-logic/lib/actions/panels-action-creator');
 
+const COMMAND_DELIMETER = ';';
 
 const COMMAND_EXIT = "exit";
 const COMMAND_HELP = "help";
@@ -82,10 +83,20 @@ export default class CommandInput extends blessed.Form {
     this._input.focus();
   }
 
+  setValue(value) {
+    value = value.replace("\n", "; ");
+    this._input.setValue(value);
+    this.focusInput();
+  }
+
+  getValue() {
+    return this._input.getValue();
+  }
+
   _submitCommand() {
     this.focusInput();
 
-    const command = this._input.getValue().trim();
+    const command = this.getValue().trim();
     if (!command) {
       return;
     }
@@ -95,7 +106,9 @@ export default class CommandInput extends blessed.Form {
 
     this._input.clearValue();
 
-    this._handleCommand(command);
+    command.split(COMMAND_DELIMETER).forEach((singleCommand) => {
+      this._handleCommand(singleCommand.trim());
+    });
 
     this.screen.render();
   }
@@ -112,11 +125,10 @@ export default class CommandInput extends blessed.Form {
     if (this.historyIndex <= 0) {
       return;
     }
-    
+
     this.historyIndex -= 1;
-    
-    this._input.setValue(this.history[this.historyIndex]);
-    this.focusInput();
+
+    this.setValue(this.history[this.historyIndex]);
   }
 
   _historyNext() {
@@ -125,8 +137,7 @@ export default class CommandInput extends blessed.Form {
     }
 
     this.historyIndex += 1;
-    this._input.setValue(this.history[this.historyIndex]);
-    this.focusInput();
+    this.setValue(this.history[this.historyIndex]);
   }
 
   _handleCommand(command) {
