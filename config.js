@@ -20,13 +20,13 @@ export default class Config extends DefaultConfig {
     };
   }
 
-  getUserColorName(username) {
+  getUserColorName(user) {
     var colors = {
       user0: "blue",
       user1: "yellow",
       user2: "pink"
     };
-    return colors[this.getUserColor(username)];
+    return colors[user];
   }
 }
 
