@@ -84,7 +84,7 @@ export default class CommandInput extends blessed.Form {
   }
 
   setValue(value) {
-    value = value.replace("\n", "; ");
+    value = value.replace(/\n/g, "; ");
     this._input.setValue(value);
     this.focusInput();
   }

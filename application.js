@@ -62,7 +62,7 @@ export default class EmulatorApp {
         this._err(err);
         return;
       }
-      this.commandInput.setValue(value);
+      this.commandInput.setValue(value.trim());
     });
   }
 
