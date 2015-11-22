@@ -83,7 +83,7 @@ export default class SculptureView extends blessed.Box {
   }
 
   renderHandshakeGameProperties() {
-    let content = '{yellow-fg}handshake:{/yellow-fg} (nothing for the handshake game)';
+    let content = '{yellow-fg}handshake:{/yellow-fg} (N/A)';
     return content;
   }
 
