@@ -1,14 +1,14 @@
 const blessed = require('blessed');
 
-const {SculptureStore, DisksActionCreator, Disk} = require('@anyware/game-logic');
+const SculptureStore = require('@anyware/game-logic/lib/sculpture-store');
+const DisksActionCreator = require('@anyware/game-logic/lib/actions/disks-action-creator');
+const Disk = require('@anyware/game-logic/lib/utils/disk');
 
 const VIEW_TITLE = "{center}{bold}Disks{/bold}{/center}";
 const CELL_WIDTH = 3;
-const DISK_TURN_UPDATE_INTERVAL = 500; // ms
-const DISK_MAX_POSITION = 30;
 
 export default class DiskView extends blessed.Box {
-  constructor(store, dispatcher, windowOptions) {
+  constructor(store, config, dispatcher, windowOptions) {
     super(Object.assign({
       tags: true,
       border: {
@@ -21,13 +21,15 @@ export default class DiskView extends blessed.Box {
     }, windowOptions));
 
     this.store = store;
+    this.config = config;
+    this.viewConfig = this.config.DISK_VIEW;
 
     this._disksActionCreator = new DisksActionCreator(dispatcher);
 
     this.renderDisks();
     this.store.on(SculptureStore.EVENT_CHANGE, this._handleChanges.bind(this));
 
-    setInterval(this._updateDiskPositions.bind(this), DISK_TURN_UPDATE_INTERVAL);
+    setInterval(this._updateDiskPositions.bind(this), this.viewConfig.TURN_UPDATE_INTERVAL);
   }
 
   renderDisks() {
@@ -125,10 +127,10 @@ export default class DiskView extends blessed.Box {
       }
 
       if (position < 0) {
-        position += DISK_MAX_POSITION;
+        position += this.viewConfig.MAX_POSITION;
       }
       else {
-        position %= DISK_MAX_POSITION;
+        position %= this.viewConfig.MAX_POSITION;
       }
 
       this._disksActionCreator.sendDiskUpdate(diskId, {

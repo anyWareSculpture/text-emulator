@@ -1,11 +1,14 @@
 const blessed = require('blessed');
 
-const {SculptureStore, MoleGameLogic, DiskGameLogic, SimonGameLogic} = require('@anyware/game-logic');
+const SculptureStore = require('@anyware/game-logic/lib/sculpture-store');
+const MoleGameLogic = require('@anyware/game-logic/lib/logic/mole-game-logic');
+const DiskGameLogic = require('@anyware/game-logic/lib/logic/disk-game-logic');
+const SimonGameLogic = require('@anyware/game-logic/lib/logic/simon-game-logic');
 
 const VIEW_TITLE = "{center}{bold}Sculpture{/bold}{/center}";
 
 export default class SculptureView extends blessed.Box {
-  constructor(store, windowOptions) {
+  constructor(store, config, windowOptions) {
     super(Object.assign({
       tags: true,
       border: {
@@ -18,6 +21,7 @@ export default class SculptureView extends blessed.Box {
     }, windowOptions));
 
     this.store = store;
+    this.config = config;
     this.renderSculptureProperties();
 
     this.store.on(SculptureStore.EVENT_CHANGE, this.renderSculptureProperties.bind(this));
@@ -27,13 +31,44 @@ export default class SculptureView extends blessed.Box {
     let content = VIEW_TITLE + '\n';
     content += `{yellow-fg}status:{/yellow-fg} ${this.store.data.get('status')}\n`;
 
+    content += this.renderHandshakes();
     content += this.renderCurrentGameProperties();
 
     this.setContent(content);
   }
 
+  renderHandshakes() {
+    const handshakes = this.store.data.get("handshakes");
+
+    var rendered = [];
+    for (let username of handshakes) {
+      const value = handshakes.get(username);
+      if (!value) {
+        continue;
+      }
+
+      let renderContent = `{yellow-fg}${username}:{/yellow-fg} `;
+      renderContent += `{bold}{green-fg}${value}{/green-fg}{/bold}`;
+
+      rendered.push(renderContent);
+    }
+
+    let content = "{yellow-fg}handshakes:{/yellow-fg}\n";
+    if (rendered.length) {
+      content += rendered.join(", ");
+    }
+    else {
+      content += "nothing yet."
+    }
+
+    return content + '\n';
+  }
+
   renderCurrentGameProperties() {
-    if (this.store.isPlayingMoleGame) {
+    if (this.store.isPlayingHandshakeGame) {
+      return this.renderHandshakeGameProperties();
+    }
+    else if (this.store.isPlayingMoleGame) {
       return this.renderMoleGameProperties();
     }
     else if (this.store.isPlayingDiskGame) {
@@ -45,6 +80,11 @@ export default class SculptureView extends blessed.Box {
     else {
       return 'No game currently being played';
     }
+  }
+
+  renderHandshakeGameProperties() {
+    let content = '{yellow-fg}handshake:{/yellow-fg} (N/A)';
+    return content;
   }
 
   renderMoleGameProperties() {

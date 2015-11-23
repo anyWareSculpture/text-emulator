@@ -1,8 +1,7 @@
+const clipboard = require('copy-paste');
 const blessed = require('blessed');
 
 const {Dispatcher} = require('flux');
-
-const config = require('./config');
 
 const OutputWindow = require('./output-window');
 const SculptureView = require('./views/sculpture-view');
@@ -14,10 +13,12 @@ const CommandInput = require('./command-input');
 const StateUpdateFilter = require('./state-update-filter');
 
 const StreamingClient = require('@anyware/streaming-client');
-const {SculptureStore, SculptureActionCreator} = require('@anyware/game-logic');
+
+const SculptureStore = require('@anyware/game-logic/lib/sculpture-store');
+const SculptureActionCreator = require('@anyware/game-logic/lib/actions/sculpture-action-creator');
 
 export default class EmulatorApp {
-  constructor() {
+  constructor(config) {
     this.screen = this._createApplicationScreen();
 
     this.config = config;
@@ -48,6 +49,21 @@ export default class EmulatorApp {
     this.sculptureActionCreator = new SculptureActionCreator(this.dispatcher);
 
     this._layoutScreen();
+  }
+
+  copyAll() {
+    const value = this.commandInput.getValue();
+    clipboard.copy(value);
+  }
+
+  pasteReplace() {
+    clipboard.paste((err, value) => {
+      if (err) {
+        this._err(err);
+        return;
+      }
+      this.commandInput.setValue(value.trim());
+    });
   }
 
   quit() {
@@ -94,9 +110,11 @@ export default class EmulatorApp {
       autoPadding: true,
       smartCSR: true,
       debug: true,
-      ignoreLocked: ['C-c', 'f12']
+      ignoreLocked: ['C-c', 'C-v', 'C-x', 'f12']
     });
     screen.key(['C-c'], this.quit.bind(this));
+    screen.key(['C-x'], this.copyAll.bind(this));
+    screen.key(['C-v'], this.pasteReplace.bind(this));
 
     screen.title = 'anyWare Emulator';
 
@@ -112,8 +130,8 @@ export default class EmulatorApp {
   _setupViews() {
     let totalHeight = 0;
 
-    const sculptureViewHeight = 5;
-    this.sculptureView = new SculptureView(this.sculpture, {
+    const sculptureViewHeight = 7;
+    this.sculptureView = new SculptureView(this.sculpture, this.config, {
       parent: this.screen,
       top: 0,
       left: 0,
@@ -123,7 +141,7 @@ export default class EmulatorApp {
     totalHeight += sculptureViewHeight;
 
     const panelViewHeight = 7;
-    this.panelView = new PanelView(this.sculpture, this.dispatcher, {
+    this.panelView = new PanelView(this.sculpture, this.config, this.dispatcher, {
       parent: this.screen,
       top: totalHeight,
       left: 0,
@@ -133,7 +151,7 @@ export default class EmulatorApp {
     totalHeight += panelViewHeight;
 
     const diskViewHeight = 6;
-    this.diskView = new DiskView(this.sculpture, this.dispatcher, {
+    this.diskView = new DiskView(this.sculpture, this.config, this.dispatcher, {
       parent: this.screen,
       top: totalHeight,
       left: 0,
@@ -204,10 +222,10 @@ export default class EmulatorApp {
 
     this.client.once(StreamingClient.EVENT_CONNECT, () => {
       //TODO: Temporarily here until the full game transitions are implemented
-      //TODO: This if statement is here to account for reconnections
-      if (!this.sculpture.isPlayingMoleGame) {
-        this._log("Starting mole game...");
-        this.sculptureActionCreator.sendStartMoleGame();
+      if (this.sculpture.isPlayingNoGame) {
+        const game = this.config.GAMES_SEQUENCE[0];
+        this._log(`Starting ${game} game...`);
+        this.sculptureActionCreator.sendStartGame(game);
       }
     });
 

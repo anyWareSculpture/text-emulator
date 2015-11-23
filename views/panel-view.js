@@ -1,6 +1,7 @@
 const blessed = require('blessed');
 
-const {SculptureStore, SculptureActionCreator} = require('@anyware/game-logic');
+const SculptureStore = require('@anyware/game-logic/lib/sculpture-store');
+const SculptureActionCreator = require('@anyware/game-logic/lib/actions/sculpture-action-creator');
 
 const PanelAnimations = require('./animations/panel-animations');
 
@@ -8,7 +9,7 @@ const VIEW_TITLE = "{center}{bold}Panels{/bold}{/center}";
 const CELL_WIDTH = 3;
 
 export default class PanelView extends blessed.Box {
-  constructor(store, dispatcher, windowOptions) {
+  constructor(store, config, dispatcher, windowOptions) {
     super(Object.assign({
       tags: true,
       border: {
@@ -21,6 +22,8 @@ export default class PanelView extends blessed.Box {
     }, windowOptions));
 
     this.store = store;
+    this.config = config;
+
     this.sculptureActionCreator = new SculptureActionCreator(dispatcher);
 
     this._animating = false;
@@ -120,12 +123,9 @@ export default class PanelView extends blessed.Box {
   _colorFromKeyword(keyword) {
     const keywordColors = {
       success: "green",
-      error: "red",
-      user0: "blue",
-      user1: "yellow",
-      user2: "pink"
+      error: "red"
     };
-    return keywordColors[keyword] || keyword;
+    return keywordColors[keyword] || this.config.getUserColorName(keyword) || keyword;
   }
 
   _handleStatusChanges(changes) {

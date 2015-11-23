@@ -1,6 +1,10 @@
 const blessed = require('blessed');
 
-const {PanelsActionCreator, DisksActionCreator} = require('@anyware/game-logic');
+const SculptureActionCreator = require('@anyware/game-logic/lib/actions/sculpture-action-creator');
+const DisksActionCreator = require('@anyware/game-logic/lib/actions/disks-action-creator');
+const PanelsActionCreator = require('@anyware/game-logic/lib/actions/panels-action-creator');
+
+const COMMAND_DELIMETER = ';';
 
 const COMMAND_EXIT = "exit";
 const COMMAND_HELP = "help";
@@ -8,6 +12,7 @@ const COMMAND_AUTH = "login";
 const COMMAND_PANEL = "panel";
 const COMMAND_PRESS = "press";
 const COMMAND_DISK = "disk";
+const COMMAND_HANDSHAKE = "handshake";
 
 const COMMAND_DOCS = {
   [COMMAND_EXIT]: "Quit this program",
@@ -15,7 +20,8 @@ const COMMAND_DOCS = {
   [COMMAND_AUTH]: "Login using a provided username and password",
   [COMMAND_PANEL]: "Activate or deactivate a specified panel",
   [COMMAND_PRESS]: "Press a panel for the given number of milliseconds",
-  [COMMAND_DISK]: "Set one or more disk positions"
+  [COMMAND_DISK]: "Set one or more disk positions",
+  [COMMAND_HANDSHAKE]: "Activates or deactivates handshake for a certain username"
 };
 
 export default class CommandInput extends blessed.Form {
@@ -36,6 +42,7 @@ export default class CommandInput extends blessed.Form {
       }
     }, options));
 
+    this.sculptureActionCreator = new SculptureActionCreator(dispatcher);
     this.panelsActionCreator = new PanelsActionCreator(dispatcher);
     this.disksActionCreator = new DisksActionCreator(dispatcher);
     this.history = [];
@@ -76,10 +83,20 @@ export default class CommandInput extends blessed.Form {
     this._input.focus();
   }
 
+  setValue(value) {
+    value = value.replace(/\n/g, "; ");
+    this._input.setValue(value);
+    this.focusInput();
+  }
+
+  getValue() {
+    return this._input.getValue();
+  }
+
   _submitCommand() {
     this.focusInput();
 
-    const command = this._input.getValue().trim();
+    const command = this.getValue().trim();
     if (!command) {
       return;
     }
@@ -89,7 +106,9 @@ export default class CommandInput extends blessed.Form {
 
     this._input.clearValue();
 
-    this._handleCommand(command);
+    command.split(COMMAND_DELIMETER).forEach((singleCommand) => {
+      this._handleCommand(singleCommand.trim());
+    });
 
     this.screen.render();
   }
@@ -106,11 +125,10 @@ export default class CommandInput extends blessed.Form {
     if (this.historyIndex <= 0) {
       return;
     }
-    
+
     this.historyIndex -= 1;
-    
-    this._input.setValue(this.history[this.historyIndex]);
-    this.focusInput();
+
+    this.setValue(this.history[this.historyIndex]);
   }
 
   _historyNext() {
@@ -119,8 +137,7 @@ export default class CommandInput extends blessed.Form {
     }
 
     this.historyIndex += 1;
-    this._input.setValue(this.history[this.historyIndex]);
-    this.focusInput();
+    this.setValue(this.history[this.historyIndex]);
   }
 
   _handleCommand(command) {
@@ -132,7 +149,8 @@ export default class CommandInput extends blessed.Form {
       [COMMAND_AUTH]: this._commandAuthenticate.bind(this),
       [COMMAND_PANEL]: this._commandPanel.bind(this),
       [COMMAND_PRESS]: this._commandPress.bind(this),
-      [COMMAND_DISK]: this._commandDisk.bind(this)
+      [COMMAND_DISK]: this._commandDisk.bind(this),
+      [COMMAND_HANDSHAKE]: this._commandHandshake.bind(this),
     }
 
     const commandHandler = commandHandlers[commandName];
@@ -150,20 +168,12 @@ export default class CommandInput extends blessed.Form {
 
   _commandPanel(args) {
     if (args.length !== 3) {
-      this._error('Usage: panel stripId panelId pressed');
+      this._error('Usage: panel stripId panelId pressed?');
       return;
     }
 
     let [stripId, panelId, active] = args;
-    if (active === "true") {
-      active = true;
-    }
-    else if (active === "false") {
-      active = false;
-    }
-    else {
-      active = !!parseInt(active);
-    }
+    active = this._parseBoolean(active);
 
     this.panelsActionCreator.sendPanelPressed(stripId, panelId, active);
   }
@@ -204,7 +214,7 @@ export default class CommandInput extends blessed.Form {
 
   _commandDisk(args) {
     if (args.length % 2 !== 0) {
-      this._error('Usage: diskId position [diskId position] ...');
+      this._error('Usage: disk diskId position [diskId position] ...');
       return;
     }
 
@@ -223,6 +233,34 @@ export default class CommandInput extends blessed.Form {
         diskId = null;
       }
     }
+  }
+
+  _commandHandshake(args) {
+    if (args.length !== 2) {
+      this._error('Usage: handshake username active?');
+      return;
+    }
+
+    let [username, active] = args;
+    active = this._parseBoolean(active);
+
+    if (active) {
+      this.sculptureActionCreator.sendHandshakeActivate(username);
+    }
+    else {
+      this.sculptureActionCreator.sendHandshakeDeactivate(username);
+    }
+  }
+
+  _parseBoolean(value) {
+    return {
+      "true": true,
+      "on": true,
+      "1": true,
+      "false": false,
+      "off": false,
+      "0": false
+    }[value];
   }
 }
 

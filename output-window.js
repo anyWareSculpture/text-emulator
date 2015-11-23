@@ -3,8 +3,12 @@ const fs = require('fs');
 const blessed = require('blessed');
 
 const WELCOME_MESSAGE = (
-  "Welcome!\n" +
-  "Press Ctrl + C or type 'exit' and hit enter to exit.\n"
+  "{green-fg}" +
+  "Welcome! Use the 'help' command if you're stuck.\n" +
+  "Ctrl + C or type 'exit' and hit enter to exit.\n" + 
+  "Ctrl + V to replace the input with the clip board contents\n" +
+  "Ctrl + X to copy the entire line" +
+  "{/green-fg}"
 );
 
 export default class OutputWindow extends blessed.Box {

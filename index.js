@@ -1,7 +1,13 @@
 require('source-map-support').install();
 
+const Config = require('./config');
+const EmulatorApp = require('./application');
+
 let app;
+let errorsOccurred = false;
 process.on('uncaughtException', function(err) {
+  errorsOccurred = true;
+
   const currentDate = new Date();
   const currentDay = currentDate.toDateString();
   const currentTime = currentDate.toTimeString();
@@ -22,21 +28,19 @@ process.on('uncaughtException', function(err) {
   }
 });
 
-const config = require('./config');
+process.on('exit', function() {
+  if (errorsOccurred) {
+    console.error("There were errors. See error.log for more information");
+  }
+});
 
-const EmulatorApp = require('./application');
-
-const DEFAULT_CLIENT_CONNECTION_OPTIONS = {
-  username: "anyware",
-  password: "anyware",
-  host: "connect.shiftr.io"
-};
-
+const config = new Config();
 app = new EmulatorApp(config);
 
-const connectionOptions = Object.assign({}, DEFAULT_CLIENT_CONNECTION_OPTIONS);
+const connectionOptions = Object.assign({}, config.CLIENT_CONNECTION_OPTIONS.default);
 if (process.argv.length === 4) {
   console.log("Using authentication information provided by command arguments");
+  config.username = process.argv[2];
   connectionOptions.username = process.argv[2];
   connectionOptions.password = process.argv[3];
 }
