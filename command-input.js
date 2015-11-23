@@ -1,3 +1,4 @@
+const util = require('util');
 const blessed = require('blessed');
 
 const SculptureActionCreator = require('@anyware/game-logic/lib/actions/sculpture-action-creator');
@@ -13,6 +14,7 @@ const COMMAND_PANEL = "panel";
 const COMMAND_PRESS = "press";
 const COMMAND_DISK = "disk";
 const COMMAND_HANDSHAKE = "handshake";
+const COMMAND_STORE = "store";
 
 const COMMAND_DOCS = {
   [COMMAND_EXIT]: "Quit this program",
@@ -21,7 +23,8 @@ const COMMAND_DOCS = {
   [COMMAND_PANEL]: "Activate or deactivate a specified panel",
   [COMMAND_PRESS]: "Press a panel for the given number of milliseconds",
   [COMMAND_DISK]: "Set one or more disk positions",
-  [COMMAND_HANDSHAKE]: "Activates or deactivates handshake for a certain username"
+  [COMMAND_HANDSHAKE]: "Activates or deactivates handshake for a certain username",
+  [COMMAND_STORE]: "Print out the raw contents of the store"
 };
 
 export default class CommandInput extends blessed.Form {
@@ -30,7 +33,7 @@ export default class CommandInput extends blessed.Form {
   static EVENT_QUIT = "quit";
   static EVENT_AUTH = "authenticate";
 
-  constructor(dispatcher, options) {
+  constructor(store, config, dispatcher, windowOptions) {
     super(Object.assign({
       border: {
         type: 'line'
@@ -40,7 +43,10 @@ export default class CommandInput extends blessed.Form {
           fg: '#f0f0f0'
         }
       }
-    }, options));
+    }, windowOptions));
+
+    this.store = store;
+    this.config = config;
 
     this.sculptureActionCreator = new SculptureActionCreator(dispatcher);
     this.panelsActionCreator = new PanelsActionCreator(dispatcher);
@@ -151,6 +157,7 @@ export default class CommandInput extends blessed.Form {
       [COMMAND_PRESS]: this._commandPress.bind(this),
       [COMMAND_DISK]: this._commandDisk.bind(this),
       [COMMAND_HANDSHAKE]: this._commandHandshake.bind(this),
+      [COMMAND_STORE]: this._commandStore.bind(this)
     }
 
     const commandHandler = commandHandlers[commandName];
@@ -250,6 +257,15 @@ export default class CommandInput extends blessed.Form {
     else {
       this.sculptureActionCreator.sendHandshakeDeactivate(username);
     }
+  }
+
+  _commandStore(args) {
+    if (args.length) {
+      this._error("Usage: store");
+      return;
+    }
+
+    this._output(util.inspect(this.store.data, {depth: null}));
   }
 
   _parseBoolean(value) {

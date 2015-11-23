@@ -40,10 +40,11 @@ export default class EmulatorApp {
 
     this.sculpture = new SculptureStore(this.dispatcher, this.config);
     this.sculpture.on(SculptureStore.EVENT_CHANGE, (changes) => {
-      this._log(`Sent state update: ${JSON.stringify(changes)}`);
-
       const baseMetadata = {timestamp: Date.now()};
       const {update, metadata} = this.stateUpdateFilter.processOutgoingStateUpdate(changes, baseMetadata);
+
+      this._log(`Sent state update: ${JSON.stringify(update)}\n${JSON.stringify(metadata)}`);
+
       this.client.sendStateUpdate(update, metadata);
     });
     this.sculptureActionCreator = new SculptureActionCreator(this.dispatcher);
@@ -161,7 +162,7 @@ export default class EmulatorApp {
   }
 
   _setupCommandInput() {
-    this.commandInput = new CommandInput(this.dispatcher, {
+    this.commandInput = new CommandInput(this.sculpture, this.config, this.dispatcher, {
       parent: this.screen,
       bottom: 0,
       left: 0,
