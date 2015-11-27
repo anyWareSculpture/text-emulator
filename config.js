@@ -18,6 +18,8 @@ export default class Config extends DefaultConfig {
       TURN_UPDATE_INTERVAL: 500, // ms
       MAX_POSITION: 30 // number to loop back to zero on
     };
+
+    this.GAMES_SEQUENCE = [GAMES.DISK];
   }
 
   getUserColorName(user) {

@@ -85,19 +85,24 @@ export default class DiskView extends blessed.Box {
     const formattedPos = (" " + disk.getPosition()).slice(-2);
     formattedDisk += `{yellow-fg}POS:{/yellow-fg} ${formattedPos} `;
 
-    let formattedDir = {
+    let formattedDir = this._lpad({
       [Disk.CLOCKWISE]: "+1",
       [Disk.COUNTERCLOCKWISE]: "-1",
       [Disk.STOPPED]: "0",
       [Disk.CONFLICT]: "x"
-    }[disk.getDirection()];
-    formattedDir = (" " + formattedDir).slice(-2);
+    }[disk.getDirection()], 2);
 
+    formattedDisk += `{yellow-fg}CW:{/yellow-fg} ${this._lpad(disk.clockwisePull, 2)} `;
+    formattedDisk += `{yellow-fg}CCW:{/yellow-fg} ${this._lpad(disk.counterclockwisePull, 2)} `;
     formattedDisk += `{yellow-fg}DIR:{/yellow-fg} ${formattedDir} `;
 
     formattedDisk += `{yellow-fg}STATE:{/yellow-fg} ${disk.getState()} `;
     formattedDisk += `{yellow-fg}USER:{/yellow-fg} '${disk.getUser()}'`;
     return formattedDisk;
+  }
+
+  _lpad(str, width) {
+    return (" ".repeat(width) + str).slice(-width);
   }
 
   _colorFromKeyword(keyword) {
