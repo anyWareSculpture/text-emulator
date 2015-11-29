@@ -92,8 +92,6 @@ export default class DiskView extends blessed.Box {
       [Disk.CONFLICT]: "x"
     }[disk.getDirection()], 2);
 
-    formattedDisk += `{yellow-fg}CW:{/yellow-fg} ${this._lpad(disk.clockwisePull, 2)} `;
-    formattedDisk += `{yellow-fg}CCW:{/yellow-fg} ${this._lpad(disk.counterclockwisePull, 2)} `;
     formattedDisk += `{yellow-fg}DIR:{/yellow-fg} ${formattedDir} `;
 
     formattedDisk += `{yellow-fg}STATE:{/yellow-fg} ${disk.getState()} `;
