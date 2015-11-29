@@ -67,6 +67,7 @@ function getEnvironmentSection(defaultHost='') {
       return Promise.resolve({});
     }
 
+    console.log("\nEnter 'q' when you are done.");
     return getEnvironmentUsers().then((users) => {
       return Promise.resolve({
         [env]: {
@@ -79,7 +80,6 @@ function getEnvironmentSection(defaultHost='') {
 }
 
 function getEnvironmentUsers() {
-  console.log("\nEnter 'q' when you are done.");
   return new Promise((resolve, reject) => {
     let index = 0;
     const content = {};
@@ -99,7 +99,8 @@ function getEnvironmentUsers() {
 
 function getUser(number) {
   console.log(`Credentials for user ${number}:`);
-  return promptValues(['username: ', 'password: ']).then(([username, password]) => {
+  return promptValues(['username / password: ']).then(([creds]) => {
+    const [username, password] = creds.split('/').map((s) => s.trim());
     if (!username || !password) {
       return Promise.resolve({});
     }
