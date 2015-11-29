@@ -36,7 +36,7 @@ process.on('exit', function() {
 
 const config = new Config();
 app = new EmulatorApp(config);
-global.debug = app.screen.debug;
+global.debug = app.screen.debug.bind(app.screen);
 
 const connectionOptions = Object.assign({}, config.CLIENT_CONNECTION_OPTIONS.default);
 if (process.argv.length === 4) {
