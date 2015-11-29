@@ -8,9 +8,9 @@ export default class Config extends DefaultConfig {
     this.username = "sculpture0";
     this.CLIENT_CONNECTION_OPTIONS = {
       default: {
-          username: "anyware",
-          password: "anyware",
-          host: "connect.shiftr.io"
+        username: "anyware",
+        password: "anyware",
+        host: "broker.shiftr.io"
       }
     };
 
