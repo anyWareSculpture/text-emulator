@@ -135,7 +135,7 @@ export default class CommandInput extends blessed.Form {
   }
 
   _historyNext() {
-    if (this.historyIndex >= this.history.length) {
+    if (this.historyIndex >= this.history.length - 1) {
       return;
     }
 
