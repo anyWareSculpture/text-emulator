@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node_modules/babel/bin/babel-node.js --debug=${DEBUG_PORT:-5858} -- index.js $CREDENTIALS"
+    "start": "node_modules/babel/bin/babel-node.js --debug=${DEBUG_PORT:-5858} -- index.js",
+    "credentials": "node_modules/babel/bin/babel-node.js -- scripts/generate-credentials.js"
   },
   "repository": {
     "type": "git",
@@ -25,5 +26,9 @@
     "copy-paste": "^1.1.4",
     "flux": "^2.0.3",
     "source-map-support": "^0.3.3"
+  },
+  "devDependencies": {
+    "colors": "^1.1.2",
+    "prompt": "^0.2.14"
   }
 }
