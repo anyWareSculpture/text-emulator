@@ -9,6 +9,7 @@ const COMMAND_DELIMETER = ';';
 const COMMAND_EXIT = "exit";
 const COMMAND_HELP = "help";
 const COMMAND_AUTH = "login";
+const COMMAND_CLEAR = "clear";
 const COMMAND_PANEL = "panel";
 const COMMAND_PRESS = "press";
 const COMMAND_DISK = "disk";
@@ -18,6 +19,7 @@ const COMMAND_DOCS = {
   [COMMAND_EXIT]: "Quit this program",
   [COMMAND_HELP]: "Show this help information",
   [COMMAND_AUTH]: "Login using a provided username and password",
+  [COMMAND_CLEAR]: "Clear the output log",
   [COMMAND_PANEL]: "Activate or deactivate a specified panel",
   [COMMAND_PRESS]: "Press a panel for the given number of milliseconds",
   [COMMAND_DISK]: "Set one or more disk positions",
@@ -29,6 +31,7 @@ export default class CommandInput extends blessed.Form {
   static EVENT_ERROR = "error";
   static EVENT_QUIT = "quit";
   static EVENT_AUTH = "authenticate";
+  static EVENT_CLEAR = "clear";
 
   constructor(dispatcher, options) {
     super(Object.assign({
@@ -147,6 +150,7 @@ export default class CommandInput extends blessed.Form {
       [COMMAND_EXIT]: this._commandExit.bind(this),
       [COMMAND_HELP]: this._commandHelp.bind(this),
       [COMMAND_AUTH]: this._commandAuthenticate.bind(this),
+      [COMMAND_CLEAR]: this._commandClear.bind(this),
       [COMMAND_PANEL]: this._commandPanel.bind(this),
       [COMMAND_PRESS]: this._commandPress.bind(this),
       [COMMAND_DISK]: this._commandDisk.bind(this),
@@ -201,6 +205,16 @@ export default class CommandInput extends blessed.Form {
 
     const [username, password] = args;
     this.emit(CommandInput.EVENT_AUTH, username, password);
+  }
+
+  _commandClear(args) {
+    if (args.length > 1) {
+      this._error('Usage: [clearLogFile?]');
+      return;
+    }
+
+    const clearLogFile = args.length === 0 ? false : this._parseBoolean(args[0]);
+    this.emit(CommandInput.EVENT_CLEAR, clearLogFile);
   }
 
   _commandHelp(args) {

@@ -61,6 +61,15 @@ export default class OutputWindow extends blessed.Box {
 
     this._outputWindow.log(WELCOME_MESSAGE);
   }
+
+  clear() {
+    this._outputWindow.setContent('');
+  }
+
+  clearLogFile() {
+    const logFile = this._logFilePathMethod();
+    fs.truncateSync(logFile, 0);
+  }
   
   log(message) {
     this._outputLines(message, (line, timeString) => `{blue-fg}{bold}${timeString}{/} ${line}`);

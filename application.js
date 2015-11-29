@@ -86,7 +86,7 @@ export default class EmulatorApp {
   }
 
   get _username() {
-    return this._connectionOptions.username;
+    return this.config.username;
   }
 
   _log(message) {
@@ -183,6 +183,14 @@ export default class EmulatorApp {
       this._connectionOptions.password = password;
 
       this._setupStreamingClient();
+    });
+
+    this.commandInput.on(CommandInput.EVENT_CLEAR, (clearLogFile) => {
+      this.outputConsole.clear();
+
+      if (clearLogFile) {
+        this.outputConsole.clearLogFile();
+      }
     });
 
     this.commandInput.on(CommandInput.EVENT_QUIT, (text) => {
