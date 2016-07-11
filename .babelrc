@@ -1,4 +1,4 @@
 {
-    "sourceMaps": true,
-    "stage": 0
+ "presets": [ "es2015" ],
+ "plugins": [ "transform-class-properties" ]
 }
