@@ -25,7 +25,7 @@ Simon:
 
 */
 
-const _ = require('lodash');
+import _ from 'lodash';
 
 import SculptureStore from 'anyware/lib/game-logic/sculpture-store';
 import GAMES from 'anyware/lib/game-logic/constants/games';

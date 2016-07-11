@@ -1,4 +1,4 @@
-const blessed = require('blessed');
+import blessed from 'blessed';
 
 import SculptureActionCreator from 'anyware/lib/game-logic/actions/sculpture-action-creator';
 import DisksActionCreator from 'anyware/lib/game-logic/actions/disks-action-creator';

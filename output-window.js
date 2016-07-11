@@ -1,6 +1,5 @@
-const fs = require('fs');
-
-const blessed = require('blessed');
+import fs from 'fs';
+import blessed from 'blessed';
 
 const WELCOME_MESSAGE = (
   "{green-fg}" +

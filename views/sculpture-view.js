@@ -1,4 +1,4 @@
-const blessed = require('blessed');
+import blessed from 'blessed';
 
 import SculptureStore from 'anyware/lib/game-logic/sculpture-store';
 import MoleGameLogic from 'anyware/lib/game-logic/logic/mole-game-logic';

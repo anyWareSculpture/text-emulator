@@ -1,6 +1,4 @@
-//require('source-map-support').install();
-
-const fs = require('fs');
+import fs from 'fs';
 
 import Config from './config';
 import EmulatorApp from './application';

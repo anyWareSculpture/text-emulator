@@ -1,7 +1,7 @@
-const assert = require('assert');
-const path = require('path');
-const fs = require('fs');
-const promisify = require('es6-promisify');
+import assert from 'assert';
+import path from 'path';
+import fs from 'fs';
+import promisify from 'es6-promisify';
 
 // FIXME: Defer this to window.onload() ?
 const context = initContext();

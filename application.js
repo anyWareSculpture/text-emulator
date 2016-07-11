@@ -1,7 +1,6 @@
-const clipboard = require('copy-paste');
-const blessed = require('blessed');
-
-const {Dispatcher} = require('flux');
+import clipboard from 'copy-paste';
+import blessed from 'blessed';
+import {Dispatcher} from 'flux';
 
 import OutputWindow from './output-window';
 import SculptureView from './views/sculpture-view';
