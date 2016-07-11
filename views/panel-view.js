@@ -1,9 +1,8 @@
 const blessed = require('blessed');
 
-const SculptureStore = require('@anyware/game-logic/lib/sculpture-store');
-const SculptureActionCreator = require('@anyware/game-logic/lib/actions/sculpture-action-creator');
-
-const PanelAnimations = require('./animations/panel-animations');
+import SculptureStore from 'anyware/lib/game-logic/sculpture-store';
+import SculptureActionCreator from 'anyware/lib/game-logic/actions/sculpture-action-creator';
+import PanelAnimations from './animations/panel-animations';
 
 const VIEW_TITLE = "{center}{bold}Panels{/bold}{/center}";
 const CELL_WIDTH = 3;

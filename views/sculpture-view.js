@@ -1,9 +1,9 @@
 const blessed = require('blessed');
 
-const SculptureStore = require('@anyware/game-logic/lib/sculpture-store');
-const MoleGameLogic = require('@anyware/game-logic/lib/logic/mole-game-logic');
-const DiskGameLogic = require('@anyware/game-logic/lib/logic/disk-game-logic');
-const SimonGameLogic = require('@anyware/game-logic/lib/logic/simon-game-logic');
+import SculptureStore from 'anyware/lib/game-logic/sculpture-store';
+import MoleGameLogic from 'anyware/lib/game-logic/logic/mole-game-logic';
+import DiskGameLogic from 'anyware/lib/game-logic/logic/disk-game-logic';
+import SimonGameLogic from 'anyware/lib/game-logic/logic/simon-game-logic';
 
 const VIEW_TITLE = "{center}{bold}Sculpture{/bold}{/center}";
 

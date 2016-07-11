@@ -1,8 +1,8 @@
 const blessed = require('blessed');
 
-const SculptureActionCreator = require('@anyware/game-logic/lib/actions/sculpture-action-creator');
-const DisksActionCreator = require('@anyware/game-logic/lib/actions/disks-action-creator');
-const PanelsActionCreator = require('@anyware/game-logic/lib/actions/panels-action-creator');
+import SculptureActionCreator from 'anyware/lib/game-logic/actions/sculpture-action-creator';
+import DisksActionCreator from 'anyware/lib/game-logic/actions/disks-action-creator';
+import PanelsActionCreator from 'anyware/lib/game-logic/actions/panels-action-creator';
 
 const COMMAND_DELIMETER = ';';
 

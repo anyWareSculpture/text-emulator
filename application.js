@@ -3,19 +3,15 @@ const blessed = require('blessed');
 
 const {Dispatcher} = require('flux');
 
-const OutputWindow = require('./output-window');
-const SculptureView = require('./views/sculpture-view');
-const PanelView = require('./views/panel-view');
-const DiskView = require('./views/disk-view');
-
-const CommandInput = require('./command-input');
-
-const StateUpdateFilter = require('./state-update-filter');
-
-const StreamingClient = require('@anyware/streaming-client');
-
-const SculptureStore = require('@anyware/game-logic/lib/sculpture-store');
-const SculptureActionCreator = require('@anyware/game-logic/lib/actions/sculpture-action-creator');
+import OutputWindow from './output-window';
+import SculptureView from './views/sculpture-view';
+import PanelView from './views/panel-view';
+import DiskView from './views/disk-view';
+import CommandInput from './command-input';
+import StateUpdateFilter from './state-update-filter';
+import StreamingClient from 'anyware/lib/streaming-client';
+import SculptureStore from 'anyware/lib/game-logic/sculpture-store';
+import SculptureActionCreator from 'anyware/lib/game-logic/actions/sculpture-action-creator';
 
 export default class EmulatorApp {
   constructor(config) {
@@ -215,11 +211,13 @@ export default class EmulatorApp {
   }
 
   _setupStreamingClient() {
+    this._log('setupStreamingClient()');
     if (this.client) {
       this.client.close();
     }
 
     this._log(`Using username ${this._username}`);
+    this._log(`options ${JSON.stringify(this._connectionOptions)}`);
 
     this.client = new StreamingClient(this._connectionOptions);
 
